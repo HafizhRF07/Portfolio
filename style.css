@@ -2877,6 +2877,18 @@
           padding: 120px 15px 30px 15px;
           gap: 8px;
         }
+
+        .hero .subtitle {
+          font-size: 0.9rem;
+          white-space: normal; /* Ubah dari nowrap */
+          line-height: 1.4;
+          max-width: 280px; /* Batasi lebar untuk memaksa wrap */
+          margin-left: auto;
+          margin-right: auto;
+          text-align: center;
+          height: auto; /* Ubah dari fixed height */
+          min-height: 2.8em; /* Minimum tinggi untuk 2 baris */
+        }
       
         .hero-image {
           order: -1;
