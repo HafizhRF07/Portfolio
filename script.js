@@ -67,32 +67,63 @@ menuToggle.addEventListener("click", () => {
 });
 
 
-
 // Smooth scroll dengan offset untuk header fixed
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener("click", function (e) {
     e.preventDefault();
     
     const targetId = this.getAttribute("href");
-    if (targetId === "#") return;
+    if (targetId === "#" || targetId === "#hero") {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+      
+      if (navLinks.classList.contains("show")) {
+        navLinks.classList.remove("show");
+        menuIcon.textContent = "☰";
+        menuText.classList.remove("hidden");
+      }
+      return;
+    }
     
     const targetElement = document.querySelector(targetId);
     if (!targetElement) return;
     
-    // Hitung offset header (tinggi header + padding)
-    const headerOffset = 85;
-    const elementPosition = targetElement.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    // Trigger animasi dulu jika belum visible
+    if (!targetElement.classList.contains('is-visible')) {
+      targetElement.classList.add('is-visible');
+    }
     
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth"
-    });
+    // Tunggu animasi selesai, baru scroll dengan offset custom per section
+    setTimeout(() => {
+      let headerOffset = 100; // Default offset
+      
+      // Custom offset untuk About section
+      if (targetId === '#about') {
+        headerOffset = 50; // Sesuaikan nilai ini untuk About
+      } else if (targetId === '#education') {
+        headerOffset = 60;
+      } else if (targetId === '#portfolio') {
+        headerOffset = 110;
+      } else if (targetId === '#contact') {
+        headerOffset = 110;
+      }
+      
+      const elementPosition = targetElement.offsetTop;
+      const offsetPosition = elementPosition - headerOffset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }, 150); // Delay untuk animasi fade-in
     
-    // Tutup menu mobile setelah klik
+    // Tutup menu mobile
     if (navLinks.classList.contains("show")) {
       navLinks.classList.remove("show");
-      menuToggle.textContent = "☰";
+      menuIcon.textContent = "☰";
+      menuText.classList.remove("hidden");
     }
   });
 });
@@ -118,10 +149,13 @@ typeEffect();
 // =====================
 const skills = document.querySelector(".skills");
 if (skills) {
-  const skillsClone = skills.cloneNode(true);
   const skillsContainer = document.querySelector('.skills-container');
   if (skillsContainer) {
-    skillsContainer.append(skillsClone);
+    // Clone 3-4 kali untuk memastikan seamless
+    for (let i = 0; i < 3; i++) {
+      const skillsClone = skills.cloneNode(true);
+      skillsContainer.append(skillsClone);
+    }
   }
 }
 
@@ -664,7 +698,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ]).then(([firebaseAuth, firebaseDatabase]) => {
       const { initializeApp } = firebaseApp;
       const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } = firebaseAuth;
-      const { getDatabase, ref, push, onValue, query, orderByChild } = firebaseDatabase;
+      const { getDatabase, ref, push, onValue, query, orderByChild, remove } = firebaseDatabase;
 
       const firebaseConfig = {
         apiKey: "AIzaSyCEcafrhmiztofjSsvIGysF7RRkdULfOo4",
@@ -720,11 +754,11 @@ document.addEventListener("DOMContentLoaded", () => {
           currentUser = user;
           if (authSection) authSection.classList.add('hidden');
           if (ratingSection) ratingSection.classList.remove('hidden');
-          
+
           const userAvatar = document.getElementById('userAvatar');
           const userName = document.getElementById('userName');
           const userEmail = document.getElementById('userEmail');
-          
+
           if (userAvatar) userAvatar.src = user.photoURL || 'https://via.placeholder.com/50';
           if (userName) userName.textContent = user.displayName;
           if (userEmail) userEmail.textContent = user.email;
@@ -772,12 +806,12 @@ document.addEventListener("DOMContentLoaded", () => {
         submitRatingBtn.addEventListener('click', async () => {
           const userComment = document.getElementById('userComment');
           const comment = userComment ? userComment.value.trim() : '';
-          
+
           if (selectedRating === 0) {
             alert('Please select a rating!');
             return;
           }
-          
+
           if (!comment) {
             alert('Please write a comment!');
             return;
@@ -794,12 +828,12 @@ document.addEventListener("DOMContentLoaded", () => {
               comment: comment,
               timestamp: Date.now()
             });
-            
+
             if (userComment) userComment.value = '';
             selectedRating = 0;
             updateStars();
             if (ratingText) ratingText.textContent = 'Select a rating';
-            
+
             alert('Thank you for your rating and comment!');
           } catch (error) {
             alert('Failed to submit: ' + error.message);
@@ -813,7 +847,7 @@ document.addEventListener("DOMContentLoaded", () => {
       onValue(commentsQuery, (snapshot) => {
         if (!commentsList) return;
         commentsList.innerHTML = '';
-        
+
         if (!snapshot.exists()) {
           commentsList.innerHTML = '<div class="empty-comments">No comments yet. Be the first to leave a rating!</div>';
           return;
@@ -821,20 +855,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const comments = [];
         snapshot.forEach((childSnapshot) => {
-          comments.push(childSnapshot.val());
+          comments.push({
+            id: childSnapshot.key,
+            ...childSnapshot.val()
+          });
         });
-        
+
         comments.reverse().forEach(data => {
           const commentItem = document.createElement('div');
           commentItem.className = 'comment-item';
-          
+
           let starsHTML = '';
           for (let i = 1; i <= 5; i++) {
             starsHTML += `<span class="star ${i <= data.rating ? 'active' : ''}">★</span>`;
           }
-          
+
           const timeAgo = getTimeAgo(data.timestamp);
-          
+          const isOwner = currentUser && currentUser.uid === data.userId;
+          const deleteBtn = isOwner ? `<button class="delete-btn" data-id="${data.id}" title="Delete comment"><i class="fas fa-trash-alt"></i></button>` : '';
+
           commentItem.innerHTML = `
             <div class="comment-header">
               <div class="comment-author-info">
@@ -844,10 +883,27 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="comment-stars">${starsHTML}</div>
             </div>
             <p class="comment-text">${data.comment}</p>
-            <span class="comment-date">${timeAgo}</span>
+            <div class="comment-footer">
+              <span class="comment-date">${timeAgo}</span>
+              ${deleteBtn}
+            </div>
           `;
-          
+
           commentsList.appendChild(commentItem);
+        });
+
+        // Event listener untuk delete button
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const commentId = this.getAttribute('data-id');
+            if (confirm('Are you sure you want to delete this comment?')) {
+              try {
+                await remove(ref(database, `comments/${commentId}`));
+              } catch (error) {
+                alert('Failed to delete: ' + error.message);
+              }
+            }
+          });
         });
       });
 
@@ -858,7 +914,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
         const days = Math.floor(hours / 24);
-        
+
         if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
         if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
         if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;

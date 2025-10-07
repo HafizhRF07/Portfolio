@@ -481,7 +481,8 @@
         display: flex;
         align-items: center;
         margin-bottom: -50px;
-        margin-top: -50px;
+        margin-top: -30px;
+        scroll-margin-top: 200px;
       }
 
       .about-content {
@@ -686,7 +687,8 @@
       .education-section {
         padding: 60px 40px;
         position: relative;
-        margin-top: 0px;
+        margin-top: -40px;
+        margin-bottom: -60px;
       }
 
       .education-container {
@@ -993,8 +995,10 @@
         width: 100%;
         max-width: 1100px;
         margin: 0 auto;
+        margin-bottom: -50px;
         position: relative;
         padding: 0 45px;
+        padding-bottom: 0;
         overflow: hidden; /* ADDED: Prevent overflow */
         contain: layout style paint; /* ADDED: Isolasi sempurna */
       }
@@ -1176,11 +1180,13 @@
         position: relative; /* ADDED */
         overflow: visible; /* ADDED */
         contain: layout style; /* ADDED: Isolasi */
+        margin-bottom: -50px;
       }
 
       .projects-container {
         max-width: 1200px;
         margin: 0 auto;
+        margin-bottom: 0;
       }
 
       .projects-grid {
@@ -1276,7 +1282,7 @@
         border-radius: 8px;
         text-decoration: none;
         color: #000; 
-        background: linear-gradient(45deg, #ffffff);
+        background: #ffffff;
         transition: all 0.3s ease;
       }
 
@@ -1327,32 +1333,38 @@
          SKILLS SECTION - FIXED
          ======================================== */
       #skills {
-        position: relative; /* ADDED */
-        overflow: visible; /* ADDED */
-        contain: layout style; /* ADDED: Isolasi */
+        position: relative;
+        overflow: visible;
+        contain: layout style;
+        margin-top: 3rem;
+        margin-bottom: -3rem;
+        padding-bottom: 0;
       }
 
       .skills-container {
         margin: 0 auto;
+        margin-bottom: 0;
         overflow: hidden;
         display: flex;
+        gap: 4rem; /* Jarak antar set duplikat */
       }
 
       .skills {
         display: flex;
         flex-shrink: 0;
-        gap: 4.7rem;
-        padding: 1rem;
-        animation: inifite-scroll 5s linear infinite; 
+        gap: 4rem; /* Jarak antar icon */
+        animation: infinite-scroll 5s linear infinite; 
       }
 
       .skills img {
-        height: 3rem;
+        height: 3.5rem;
         filter: none;
+        transition: transform 0.3s ease;
+        animation: float-icon 3s ease-in-out infinite;
       }
 
       .skills img:hover {
-        filter: grayscale(0);
+        filter: drop-shadow(0 10px 20px rgba(0, 212, 255, 0.5));
       }
 
       .skill-chip {
@@ -1407,12 +1419,12 @@
         max-height: none !important;
       }
 
-      @keyframes inifite-scroll {
+      @keyframes infinite-scroll {
         from {
           transform: translateX(0);
         }
         to {
-          transform: translateX(-100%);
+          transform: translateX(calc(-100% - 4rem));
         }
       }
 
@@ -1859,6 +1871,22 @@
       .comment-date {
         font-size: 12px;
         color: #666;
+      }
+
+      .comment-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .delete-btn {
+        padding: 4px 8px;
+        background: transparent;
+        color: #ff4444;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
       }
     
       .empty-comments {
@@ -2607,6 +2635,7 @@
           contain: layout style;
           padding: 0 !important;
           margin: 0 !important;
+          transform: translateY(2.5rem);
         }
       
         .skills-wrapper {
@@ -2981,10 +3010,8 @@
 
         .education-section {
           padding: 50px 20px;
-        }
-
-        .education-section {
-          padding: 50px 20px;
+          margin-top: -30px;
+          margin-bottom: -40px;
         }
       
         .education-section h2 {
@@ -3005,6 +3032,12 @@
           padding-right: 15px !important;
           margin-bottom: 45px;
           min-height: auto;
+        }
+
+        /* ADDED: Force semua timeline content rata kiri */
+        .timeline-item.left .timeline-content,
+        .timeline-item.right .timeline-content {
+          text-align: left !important;
         }
       
         .timeline-dot {
@@ -3078,6 +3111,7 @@
           overflow: hidden;
           padding: 0 15px !important;
           min-height: auto !important;
+          transform: translateY(2.5rem);
         }
       
         #certificates .certificates-wrapper {
@@ -3171,6 +3205,7 @@
           overflow-y: visible;
           padding: 0 !important;
           margin: 0 !important;
+          transform: translateY(2.5rem);
         }
       
         .projects-grid {
@@ -3190,6 +3225,7 @@
           contain: layout style;
           padding: 0 !important;
           margin: 0 !important;
+          transform: translateY(2.5rem);
         }
       
         .skills-wrapper {
