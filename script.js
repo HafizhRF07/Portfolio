@@ -22,7 +22,7 @@ createParticles();
 // =====================
 // HERO TEXT TYPING
 // =====================
-const texts = ["Data Science", "Aspiring Data Analyst & Data Scientist"];
+const texts = ["Data Science", "Aspiring Data & Visualization Specialist"];
 let index = 0, charIndex1 = 0, deleting = false;
 const textSpan = document.querySelector(".text");
 
