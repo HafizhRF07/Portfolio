@@ -2136,19 +2136,44 @@
       }
 
       /* Nested replies */
+      /* Nested replies */
       .nested-replies {
         margin-top: 12px;
-        padding-left: 20px;
-        border-left: 2px solid rgba(0, 212, 255, 0.15);
+        padding-left: 30px;
+        border-left: 2px solid rgba(0, 212, 255, 0.2);
+      }
+
+      .nested-reply-item {
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        margin-bottom: 10px;
+        position: relative;
       }
       
-      .nested-reply-item {
-        padding: 10px;
-        background: rgba(0, 0, 0, 0.15);
-        border-radius: 6px;
-        margin-bottom: 8px;
+      .reply-to-reply-btn {
+        padding: 4px 8px;
+        background: transparent;
+        color: #b0b8c4;
+        border: none;
+        font-size: 12px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        pointer-events: auto;
       }
-    
+
+      .reply-to-reply-btn:hover {
+        background: rgba(0, 212, 255, 0.1);
+        color: #00d4ff;
+      }
+
+      .reply-to-reply-btn i {
+        pointer-events: none; /* Icon size default, sama dengan .reply-btn */
+      }
       .empty-comments {
         text-align: center;
         padding: 40px 20px;

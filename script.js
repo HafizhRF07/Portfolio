@@ -1089,6 +1089,9 @@ document.addEventListener("DOMContentLoaded", () => {
             
         const replyToText = replyData.replyToName ? `<span style="color: #00d4ff; font-size: 12px;">@${replyData.replyToName}</span> ` : '';
             
+        // ADDED: Tombol Reply untuk nested reply
+        const replyBtn = currentUser ? `<button class="reply-to-reply-btn" data-reply-id="${replyData.id}" data-reply-name="${replyData.userName}"><i class="fas fa-reply"></i> Reply</button>` : '';
+            
         nestedItem.innerHTML = `
           <div class="reply-header">
             <div class="reply-author-info">
@@ -1110,6 +1113,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   <span>${likesData.dislikes > 0 ? likesData.dislikes : ''}</span>
                 </button>
               </div>
+              ${replyBtn}
             </div>
             ${deleteBtn}
           </div>
@@ -1122,27 +1126,80 @@ document.addEventListener("DOMContentLoaded", () => {
         const commentItem = document.querySelector(`[data-comment-id="${commentId}"]`);
         if (!commentItem) return;
       
-        // Like buttons for replies (both top-level and nested)
-        commentItem.querySelectorAll('.like-btn[data-reply-id]').forEach(btn => {
-          btn.addEventListener('click', async function() {
+        // ========================================
+        // LIKE BUTTONS - TOP-LEVEL REPLIES ONLY
+        // ========================================
+        commentItem.querySelectorAll('.reply-item > .reply-footer .like-btn[data-reply-id]').forEach(btn => {
+          const newBtn = btn.cloneNode(true);
+          btn.parentNode.replaceChild(newBtn, btn);
+
+          newBtn.addEventListener('click', async function(e) {
+            e.stopPropagation(); // Prevent event bubbling
+            e.preventDefault();
             const replyId = this.getAttribute('data-reply-id');
             const commentId = this.getAttribute('data-comment-id');
             await toggleLike(replyId, true, commentId);
           });
         });
       
-        // Dislike buttons for replies (both top-level and nested)
-        commentItem.querySelectorAll('.dislike-btn[data-reply-id]').forEach(btn => {
-          btn.addEventListener('click', async function() {
+        // ========================================
+        // DISLIKE BUTTONS - TOP-LEVEL REPLIES ONLY
+        // ========================================
+        commentItem.querySelectorAll('.reply-item > .reply-footer .dislike-btn[data-reply-id]').forEach(btn => {
+          const newBtn = btn.cloneNode(true);
+          btn.parentNode.replaceChild(newBtn, btn);
+
+          newBtn.addEventListener('click', async function(e) {
+            e.stopPropagation(); // Prevent event bubbling
+            e.preventDefault();
             const replyId = this.getAttribute('data-reply-id');
             const commentId = this.getAttribute('data-comment-id');
             await toggleDislike(replyId, true, commentId);
           });
         });
       
-        // Delete reply buttons (both top-level and nested)
+        // ========================================
+        // LIKE BUTTONS - NESTED REPLIES
+        // ========================================
+        commentItem.querySelectorAll('.nested-reply-item .like-btn[data-reply-id]').forEach(btn => {
+          const newBtn = btn.cloneNode(true);
+          btn.parentNode.replaceChild(newBtn, btn);
+
+          newBtn.addEventListener('click', async function(e) {
+            e.stopPropagation(); // CRITICAL: Prevent clicking parent reply
+            e.preventDefault();
+            const replyId = this.getAttribute('data-reply-id');
+            const commentId = this.getAttribute('data-comment-id');
+            await toggleLike(replyId, true, commentId);
+          });
+        });
+      
+        // ========================================
+        // DISLIKE BUTTONS - NESTED REPLIES
+        // ========================================
+        commentItem.querySelectorAll('.nested-reply-item .dislike-btn[data-reply-id]').forEach(btn => {
+          const newBtn = btn.cloneNode(true);
+          btn.parentNode.replaceChild(newBtn, btn);
+
+          newBtn.addEventListener('click', async function(e) {
+            e.stopPropagation(); // CRITICAL: Prevent clicking parent reply
+            e.preventDefault();
+            const replyId = this.getAttribute('data-reply-id');
+            const commentId = this.getAttribute('data-comment-id');
+            await toggleDislike(replyId, true, commentId);
+          });
+        });
+      
+        // ========================================
+        // DELETE REPLY BUTTONS (Both top-level and nested)
+        // ========================================
         commentItem.querySelectorAll('.delete-reply-btn').forEach(btn => {
-          btn.addEventListener('click', async function() {
+          const newBtn = btn.cloneNode(true);
+          btn.parentNode.replaceChild(newBtn, btn);
+
+          newBtn.addEventListener('click', async function(e) {
+            e.stopPropagation();
+            e.preventDefault();
             const commentId = this.getAttribute('data-comment-id');
             const replyId = this.getAttribute('data-reply-id');
             if (confirm('Are you sure you want to delete this reply?')) {
@@ -1157,9 +1214,16 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
       
-        // Reply to reply buttons
+        // ========================================
+        // REPLY TO REPLY BUTTONS
+        // ========================================
         commentItem.querySelectorAll('.reply-to-reply-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
+          const newBtn = btn.cloneNode(true);
+          btn.parentNode.replaceChild(newBtn, btn);
+
+          newBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
             if (!currentUser) {
               alert('Please sign in to reply!');
               return;
