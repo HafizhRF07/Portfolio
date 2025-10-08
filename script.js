@@ -661,6 +661,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const ADMIN_EMAILS = [
         'hafizhrf3072@gmail.com',
+        'hafizh.r.fawwaz@gmail.com',
       ];
 
       function isAdmin(email) {
