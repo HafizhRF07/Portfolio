@@ -48,7 +48,6 @@ function type() {
 }
 type();
 
-
 const menuToggle = document.getElementById("menu-toggle");
 const navLinks = document.getElementById("nav-links");
 const menuIcon = menuToggle.querySelector(".menu-icon");
@@ -65,7 +64,6 @@ menuToggle.addEventListener("click", () => {
     menuText.classList.remove("hidden");
   }
 });
-
 
 // Smooth scroll dengan offset untuk header fixed
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -632,6 +630,9 @@ document.addEventListener("DOMContentLoaded", () => {
     appearOnScroll.observe(section);
   });
 
+  // =====================
+  // FIREBASE INTEGRATION
+  // =====================
   import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js').then((firebaseApp) => {
     return Promise.all([
       import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js'),
@@ -639,7 +640,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ]).then(([firebaseAuth, firebaseDatabase]) => {
       const { initializeApp } = firebaseApp;
       const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } = firebaseAuth;
-      const { getDatabase, ref, push, onValue, query, orderByChild, remove, get } = firebaseDatabase;
+      const { getDatabase, ref, push, onValue, query, orderByChild, remove, get, set } = firebaseDatabase;
 
       const firebaseConfig = {
         apiKey: "AIzaSyCEcafrhmiztofjSsvIGysF7RRkdULfOo4",
@@ -682,6 +683,11 @@ document.addEventListener("DOMContentLoaded", () => {
           try {
             const result = await signInWithPopup(auth, provider);
             currentUser = result.user;
+            
+            // Auto refresh setelah login berhasil
+            setTimeout(() => {
+              window.location.reload();
+            }, 500);
           } catch (error) {
             alert('Login failed: ' + error.message);
           }
@@ -791,6 +797,97 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
+      // Like/Dislike Functionality
+      async function toggleLike(commentId, isReply = false, parentCommentId = null) {
+        if (!currentUser) {
+          alert('Please sign in to like!');
+          return;
+        }
+
+        const likePath = isReply 
+          ? `likes/replies/${parentCommentId}/${commentId}/${currentUser.uid}`
+          : `likes/comments/${commentId}/${currentUser.uid}`;
+        
+        const likeRef = ref(database, likePath);
+
+        try {
+          const snapshot = await get(likeRef);
+          if (snapshot.exists()) {
+            const currentValue = snapshot.val();
+            if (currentValue === 'like') {
+              await remove(likeRef);
+            } else {
+              await set(likeRef, 'like');
+            }
+          } else {
+            await set(likeRef, 'like');
+          }
+        } catch (error) {
+          console.error('Error toggling like:', error);
+        }
+      }
+
+      async function toggleDislike(commentId, isReply = false, parentCommentId = null) {
+        if (!currentUser) {
+          alert('Please sign in to dislike!');
+          return;
+        }
+
+        const likePath = isReply 
+          ? `likes/replies/${parentCommentId}/${commentId}/${currentUser.uid}`
+          : `likes/comments/${commentId}/${currentUser.uid}`;
+        
+        const likeRef = ref(database, likePath);
+
+        try {
+          const snapshot = await get(likeRef);
+          if (snapshot.exists()) {
+            const currentValue = snapshot.val();
+            if (currentValue === 'dislike') {
+              await remove(likeRef);
+            } else {
+              await set(likeRef, 'dislike');
+            }
+          } else {
+            await set(likeRef, 'dislike');
+          }
+        } catch (error) {
+          console.error('Error toggling dislike:', error);
+        }
+      }
+
+      async function getLikesCount(commentId, isReply = false, parentCommentId = null) {
+        const likePath = isReply 
+          ? `likes/replies/${parentCommentId}/${commentId}`
+          : `likes/comments/${commentId}`;
+        
+        const likesRef = ref(database, likePath);
+
+        try {
+          const snapshot = await get(likesRef);
+          let likes = 0;
+          let dislikes = 0;
+          let userAction = null;
+
+          if (snapshot.exists()) {
+            snapshot.forEach((child) => {
+              const value = child.val();
+              if (value === 'like') likes++;
+              else if (value === 'dislike') dislikes++;
+              
+              if (currentUser && child.key === currentUser.uid) {
+                userAction = value;
+              }
+            });
+          }
+
+          return { likes, dislikes, userAction };
+        } catch (error) {
+          console.error('Error getting likes:', error);
+          return { likes: 0, dislikes: 0, userAction: null };
+        }
+      }
+
       function showReplyForm(commentId) {
         document.querySelectorAll('.reply-form').forEach(form => form.remove());
 
@@ -807,7 +904,10 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
 
-        commentItem.appendChild(replyForm);
+        const repliesSection = commentItem.querySelector('.replies-section');
+        if (repliesSection) {
+          repliesSection.insertBefore(replyForm, repliesSection.firstChild);
+        }
 
         const textarea = replyForm.querySelector('.reply-textarea');
         const submitBtn = replyForm.querySelector('.reply-submit-btn');
@@ -849,8 +949,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const repliesRef = ref(database, `replies/${commentId}`);
         const repliesQuery = query(repliesRef, orderByChild('timestamp'));
 
-        onValue(repliesQuery, (snapshot) => {
+        onValue(repliesQuery, async (snapshot) => {
+          const existingForm = repliesContainer.querySelector('.reply-form');
           repliesContainer.innerHTML = '';
+          
+          if (existingForm) {
+            repliesContainer.appendChild(existingForm);
+          }
 
           if (!snapshot.exists()) {
             return;
@@ -864,7 +969,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
           });
 
-          replies.forEach(replyData => {
+          for (const replyData of replies) {
             const replyItem = document.createElement('div');
             replyItem.className = 'reply-item';
 
@@ -875,38 +980,55 @@ document.addEventListener("DOMContentLoaded", () => {
             const canDelete = isOwner || isCurrentUserAdmin;
             const deleteBtn = canDelete ? `<button class="delete-reply-btn" data-comment-id="${commentId}" data-reply-id="${replyData.id}" title="Delete reply"><i class="fas fa-trash-alt"></i></button>` : '';
             
-            const adminBadge = isAdmin(data.userEmail || '') ? '<span class="admin-badge">Admin</span>' : '';
+            const adminBadge = isAdmin(replyData.userEmail || '') ? '<span class="admin-badge">Admin</span>' : '';
 
-            commentItem.innerHTML = `
-              <div class="comment-header">
-                <div class="comment-author-info">
-                  <img src="${data.userPhoto || 'https://via.placeholder.com/36'}" alt="${data.userName}" class="comment-avatar">
-                  <span class="comment-author">${data.userName}${adminBadge}</span>
+            const likesData = await getLikesCount(replyData.id, true, commentId);
+            const likedClass = likesData.userAction === 'like' ? 'liked' : '';
+            const dislikedClass = likesData.userAction === 'dislike' ? 'disliked' : '';
+
+            replyItem.innerHTML = `
+              <div class="reply-header">
+                <div class="reply-author-info">
+                  <img src="${replyData.userPhoto || 'https://via.placeholder.com/28'}" alt="${replyData.userName}" class="reply-avatar">
+                  <span class="reply-author">${replyData.userName}${adminBadge}</span>
                 </div>
-                <div class="comment-stars">${starsHTML}</div>
               </div>
-              <p class="comment-text">${data.comment}</p>
-              <div class="comment-footer">
-                <div class="comment-actions">
-                  <span class="comment-date">${timeAgo}</span>
+              <p class="reply-text">${replyData.reply}</p>
+              <div class="reply-footer">
+                <div class="reply-actions">
+                  <span class="reply-date">${timeAgo}</span>
                   <div class="like-dislike-buttons">
-                    <button class="like-btn" data-id="${data.id}">
+                    <button class="like-btn ${likedClass}" data-reply-id="${replyData.id}" data-comment-id="${commentId}">
                       <i class="fas fa-thumbs-up"></i>
-                      <span>0</span>
+                      <span>${likesData.likes > 0 ? likesData.likes : ''}</span>
                     </button>
-                    <button class="dislike-btn" data-id="${data.id}">
+                    <button class="dislike-btn ${dislikedClass}" data-reply-id="${replyData.id}" data-comment-id="${commentId}">
                       <i class="fas fa-thumbs-down"></i>
-                      <span>0</span>
+                      <span>${likesData.dislikes > 0 ? likesData.dislikes : ''}</span>
                     </button>
                   </div>
-                  ${replyBtn}
                 </div>
                 ${deleteBtn}
               </div>
-              <div class="replies-section"></div>
             `;
 
             repliesContainer.appendChild(replyItem);
+          }
+
+          repliesContainer.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+              const replyId = this.getAttribute('data-reply-id');
+              const commentId = this.getAttribute('data-comment-id');
+              await toggleLike(replyId, true, commentId);
+            });
+          });
+
+          repliesContainer.querySelectorAll('.dislike-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+              const replyId = this.getAttribute('data-reply-id');
+              const commentId = this.getAttribute('data-comment-id');
+              await toggleDislike(replyId, true, commentId);
+            });
           });
 
           repliesContainer.querySelectorAll('.delete-reply-btn').forEach(btn => {
@@ -916,6 +1038,7 @@ document.addEventListener("DOMContentLoaded", () => {
               if (confirm('Are you sure you want to delete this reply?')) {
                 try {
                   await remove(ref(database, `replies/${commentId}/${replyId}`));
+                  await remove(ref(database, `likes/replies/${commentId}/${replyId}`));
                   alert('Reply deleted successfully!');
                 } catch (error) {
                   alert('Failed to delete reply: ' + error.message);
@@ -929,7 +1052,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const commentsRef = ref(database, 'comments');
       const commentsQuery = query(commentsRef, orderByChild('timestamp'));
 
-      onValue(commentsQuery, (snapshot) => {
+      onValue(commentsQuery, async (snapshot) => {
         if (!commentsList) return;
         commentsList.innerHTML = '';
 
@@ -946,7 +1069,7 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
 
-        comments.reverse().forEach(data => {
+        for (const data of comments.reverse()) {
           const commentItem = document.createElement('div');
           commentItem.className = 'comment-item';
           commentItem.setAttribute('data-comment-id', data.id);
@@ -963,22 +1086,36 @@ document.addEventListener("DOMContentLoaded", () => {
           const canDelete = isOwner || isCurrentUserAdmin;
           const deleteBtn = canDelete ? `<button class="delete-btn" data-id="${data.id}" title="Delete comment"><i class="fas fa-trash-alt"></i></button>` : '';
           
-          const replyBtn = currentUser && !isOwner ? `<button class="reply-btn" data-id="${data.id}"><i class="fas fa-reply"></i> Reply</button>` : '';
+          const replyBtn = currentUser ? `<button class="reply-btn" data-id="${data.id}"><i class="fas fa-reply"></i> Reply</button>` : '';
           
           const adminBadge = isAdmin(data.userEmail || '') ? '<span class="admin-badge">Admin</span>' : '';
+
+          const likesData = await getLikesCount(data.id);
+          const likedClass = likesData.userAction === 'like' ? 'liked' : '';
+          const dislikedClass = likesData.userAction === 'dislike' ? 'disliked' : '';
 
           commentItem.innerHTML = `
             <div class="comment-header">
               <div class="comment-author-info">
-                <img src="${data.userPhoto || 'https://via.placeholder.com/40'}" alt="${data.userName}" class="comment-avatar">
+                <img src="${data.userPhoto || 'https://via.placeholder.com/36'}" alt="${data.userName}" class="comment-avatar">
                 <span class="comment-author">${data.userName}${adminBadge}</span>
               </div>
               <div class="comment-stars">${starsHTML}</div>
             </div>
             <p class="comment-text">${data.comment}</p>
             <div class="comment-footer">
-              <div>
+              <div class="comment-actions">
                 <span class="comment-date">${timeAgo}</span>
+                <div class="like-dislike-buttons">
+                  <button class="like-btn ${likedClass}" data-id="${data.id}">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>${likesData.likes > 0 ? likesData.likes : ''}</span>
+                  </button>
+                  <button class="dislike-btn ${dislikedClass}" data-id="${data.id}">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span>${likesData.dislikes > 0 ? likesData.dislikes : ''}</span>
+                  </button>
+                </div>
                 ${replyBtn}
               </div>
               ${deleteBtn}
@@ -990,6 +1127,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const repliesContainer = commentItem.querySelector('.replies-section');
           loadReplies(data.id, repliesContainer);
+        }
+
+        document.querySelectorAll('.like-btn').forEach(btn => {
+          if (!btn.hasAttribute('data-reply-id')) {
+            btn.addEventListener('click', async function() {
+              const commentId = this.getAttribute('data-id');
+              await toggleLike(commentId);
+            });
+          }
+        });
+
+        document.querySelectorAll('.dislike-btn').forEach(btn => {
+          if (!btn.hasAttribute('data-reply-id')) {
+            btn.addEventListener('click', async function() {
+              const commentId = this.getAttribute('data-id');
+              await toggleDislike(commentId);
+            });
+          }
         });
 
         document.querySelectorAll('.delete-btn').forEach(btn => {
@@ -999,6 +1154,7 @@ document.addEventListener("DOMContentLoaded", () => {
               try {
                 await remove(ref(database, `comments/${commentId}`));
                 await remove(ref(database, `replies/${commentId}`));
+                await remove(ref(database, `likes/comments/${commentId}`));
               } catch (error) {
                 alert('Failed to delete: ' + error.message);
               }

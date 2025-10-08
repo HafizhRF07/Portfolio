@@ -1906,7 +1906,7 @@
         gap: 8px;
       }
 
-      .like-btn, .dislike-btn {
+.like-btn, .dislike-btn {
         background: transparent;
         border: none;
         color: #b0b8c4;
@@ -1932,6 +1932,179 @@
 
       .like-btn i, .dislike-btn i {
         font-size: 14px;
+      }
+
+      .like-btn.liked {
+        color: #00d4ff;
+        font-weight: 600;
+      }
+
+      .dislike-btn.disliked {
+        color: #ff4444;
+        font-weight: 600;
+      }
+
+      /* Reply Styles */
+      .replies-section {
+        margin-top: 15px;
+        padding-left: 30px;
+        border-left: 2px solid rgba(0, 212, 255, 0.2);
+      }
+
+      .reply-item {
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        margin-bottom: 10px;
+        position: relative;
+      }
+
+      .reply-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .reply-author-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .reply-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2px solid #ffd700;
+      }
+
+      .reply-author {
+        font-size: 13px;
+        font-weight: 600;
+        color: #fff;
+      }
+
+      .reply-text {
+        font-size: 13px;
+        line-height: 1.5;
+        color: #b0b8c4;
+        margin-bottom: 8px;
+      }
+
+      .reply-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .reply-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .reply-date {
+        font-size: 11px;
+        color: #666;
+      }
+
+      .delete-reply-btn {
+        padding: 4px 8px;
+        background: transparent;
+        color: #ff4444;
+        border: none;
+        font-size: 12px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+      }
+
+      .delete-reply-btn:hover {
+        background: rgba(255, 68, 68, 0.1);
+      }
+
+      .reply-form {
+        margin-top: 15px;
+        padding: 15px;
+        background: rgba(0, 212, 255, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+      }
+
+      .reply-textarea {
+        width: 100%;
+        min-height: 80px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        color: #fff;
+        font-size: 13px;
+        font-family: inherit;
+        resize: vertical;
+        margin-bottom: 10px;
+      }
+
+      .reply-textarea:focus {
+        outline: none;
+        border-color: #00d4ff;
+        background: rgba(0, 212, 255, 0.05);
+      }
+
+      .reply-form-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      .reply-submit-btn, .reply-cancel-btn {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .reply-submit-btn {
+        background: linear-gradient(45deg, #00d4ff, #0707c4);
+        color: #fff;
+      }
+
+      .reply-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+      }
+
+      .reply-cancel-btn {
+        background: transparent;
+        color: #b0b8c4;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .reply-cancel-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .reply-btn {
+        padding: 4px 8px;
+        background: transparent;
+        color: #b0b8c4;
+        border: none;
+        font-size: 12px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .reply-btn:hover {
+        background: rgba(0, 212, 255, 0.1);
+        color: #00d4ff;
       }
 
       .delete-btn {
