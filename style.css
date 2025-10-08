@@ -1818,8 +1818,8 @@
         border-radius: 10px;
       }
     
-      .comment-item {
-        padding: 20px;
+.comment-item {
+        padding: 16px;
         background: rgba(0, 212, 255, 0.05);
         border-radius: 12px;
         border-left: 3px solid #ffd700;
@@ -1829,47 +1829,61 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
       }
     
       .comment-author-info {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
       }
     
       .comment-avatar {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         border: 2px solid #ffd700;
       }
     
       .comment-author {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 600;
         color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .admin-badge {
+        background: rgba(0, 212, 255, 0.2);
+        border: 1px solid #00d4ff;
+        color: #00d4ff;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
       }
     
       .comment-stars {
         display: flex;
-        gap: 4px;
+        gap: 3px;
       }
     
       .comment-stars .star {
-        font-size: 16px;
+        font-size: 14px;
         cursor: default;
       }
     
       .comment-text {
-        font-size: 14px;
+        font-size: 13px;
         line-height: 1.6;
         color: #b0b8c4;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
       }
     
       .comment-date {
-        font-size: 12px;
+        font-size: 11px;
         color: #666;
       }
 
@@ -1880,13 +1894,59 @@
         margin-top: 10px;
       }
 
+      .comment-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .like-dislike-buttons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .like-btn, .dislike-btn {
+        background: transparent;
+        border: none;
+        color: #b0b8c4;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+      }
+
+      .like-btn:hover {
+        background: rgba(0, 212, 255, 0.1);
+        color: #00d4ff;
+      }
+
+      .dislike-btn:hover {
+        background: rgba(255, 68, 68, 0.1);
+        color: #ff4444;
+      }
+
+      .like-btn i, .dislike-btn i {
+        font-size: 14px;
+      }
+
       .delete-btn {
         padding: 4px 8px;
         background: transparent;
         color: #ff4444;
         border: none;
-        font-size: 16px;
+        font-size: 14px;
         cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+      }
+
+      .delete-btn:hover {
+        background: rgba(255, 68, 68, 0.1);
       }
     
       .empty-comments {

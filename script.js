@@ -875,20 +875,35 @@ document.addEventListener("DOMContentLoaded", () => {
             const canDelete = isOwner || isCurrentUserAdmin;
             const deleteBtn = canDelete ? `<button class="delete-reply-btn" data-comment-id="${commentId}" data-reply-id="${replyData.id}" title="Delete reply"><i class="fas fa-trash-alt"></i></button>` : '';
             
-            const adminBadge = isAdmin(replyData.userEmail || '') ? '<span class="admin-badge">Admin</span>' : '';
+            const adminBadge = isAdmin(data.userEmail || '') ? '<span class="admin-badge">Admin</span>' : '';
 
-            replyItem.innerHTML = `
-              <div class="reply-header">
-                <div class="reply-author-info">
-                  <img src="${replyData.userPhoto || 'https://via.placeholder.com/32'}" alt="${replyData.userName}" class="reply-avatar">
-                  <span class="reply-author">${replyData.userName}${adminBadge}</span>
+            commentItem.innerHTML = `
+              <div class="comment-header">
+                <div class="comment-author-info">
+                  <img src="${data.userPhoto || 'https://via.placeholder.com/36'}" alt="${data.userName}" class="comment-avatar">
+                  <span class="comment-author">${data.userName}${adminBadge}</span>
                 </div>
+                <div class="comment-stars">${starsHTML}</div>
               </div>
-              <p class="reply-text">${replyData.reply}</p>
-              <div class="reply-footer">
-                <span class="reply-date">${timeAgo}</span>
+              <p class="comment-text">${data.comment}</p>
+              <div class="comment-footer">
+                <div class="comment-actions">
+                  <span class="comment-date">${timeAgo}</span>
+                  <div class="like-dislike-buttons">
+                    <button class="like-btn" data-id="${data.id}">
+                      <i class="fas fa-thumbs-up"></i>
+                      <span>0</span>
+                    </button>
+                    <button class="dislike-btn" data-id="${data.id}">
+                      <i class="fas fa-thumbs-down"></i>
+                      <span>0</span>
+                    </button>
+                  </div>
+                  ${replyBtn}
+                </div>
                 ${deleteBtn}
               </div>
+              <div class="replies-section"></div>
             `;
 
             repliesContainer.appendChild(replyItem);
