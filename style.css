@@ -1989,6 +1989,9 @@
         font-size: 13px;
         font-weight: 600;
         color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px; /* FIXED: Same spacing as comment-author */
       }
 
       .reply-text {
@@ -2109,8 +2112,12 @@
       }
 
       .reply-btn:hover {
-        background: rgba(0, 212, 255, 0.1);
         color: #00d4ff;
+        transform: scale(1.08); /* FIXED: Hover memperbesar tombol sedikit */
+      }
+
+      .reply-btn i {
+        pointer-events: none;
       }
 
       .delete-btn {

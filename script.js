@@ -803,13 +803,13 @@ document.addEventListener("DOMContentLoaded", () => {
           alert('Please sign in to like!');
           return;
         }
-
+      
         const likePath = isReply 
           ? `likes/replies/${parentCommentId}/${commentId}/${currentUser.uid}`
           : `likes/comments/${commentId}/${currentUser.uid}`;
-        
-        const likeRef = ref(database, likePath);
 
+        const likeRef = ref(database, likePath);
+      
         try {
           const snapshot = await get(likeRef);
           if (snapshot.exists()) {
@@ -822,6 +822,9 @@ document.addEventListener("DOMContentLoaded", () => {
           } else {
             await set(likeRef, 'like');
           }
+
+          // FIXED: Update UI immediately
+          await updateLikeUI(commentId, isReply, parentCommentId);
         } catch (error) {
           console.error('Error toggling like:', error);
         }
@@ -832,13 +835,13 @@ document.addEventListener("DOMContentLoaded", () => {
           alert('Please sign in to dislike!');
           return;
         }
-
+      
         const likePath = isReply 
           ? `likes/replies/${parentCommentId}/${commentId}/${currentUser.uid}`
           : `likes/comments/${commentId}/${currentUser.uid}`;
-        
-        const likeRef = ref(database, likePath);
 
+        const likeRef = ref(database, likePath);
+      
         try {
           const snapshot = await get(likeRef);
           if (snapshot.exists()) {
@@ -851,8 +854,56 @@ document.addEventListener("DOMContentLoaded", () => {
           } else {
             await set(likeRef, 'dislike');
           }
+
+          // FIXED: Update UI immediately
+          await updateLikeUI(commentId, isReply, parentCommentId);
         } catch (error) {
           console.error('Error toggling dislike:', error);
+        }
+      }
+
+      // FIXED: New function to update UI immediately
+      async function updateLikeUI(commentId, isReply = false, parentCommentId = null) {
+        const likesData = await getLikesCount(commentId, isReply, parentCommentId);
+
+        if (isReply) {
+          // Update reply buttons
+          const replyItem = document.querySelector(`[data-reply-id="${commentId}"][data-comment-id="${parentCommentId}"]`)?.closest('.reply-item');
+          if (replyItem) {
+            const likeBtn = replyItem.querySelector('.like-btn');
+            const dislikeBtn = replyItem.querySelector('.dislike-btn');
+
+            if (likeBtn) {
+              likeBtn.classList.toggle('liked', likesData.userAction === 'like');
+              const likeCount = likeBtn.querySelector('span');
+              if (likeCount) likeCount.textContent = likesData.likes > 0 ? likesData.likes : '';
+            }
+
+            if (dislikeBtn) {
+              dislikeBtn.classList.toggle('disliked', likesData.userAction === 'dislike');
+              const dislikeCount = dislikeBtn.querySelector('span');
+              if (dislikeCount) dislikeCount.textContent = likesData.dislikes > 0 ? likesData.dislikes : '';
+            }
+          }
+        } else {
+          // Update comment buttons
+          const commentItem = document.querySelector(`[data-comment-id="${commentId}"]`);
+          if (commentItem) {
+            const likeBtn = commentItem.querySelector('.like-btn[data-id="' + commentId + '"]');
+            const dislikeBtn = commentItem.querySelector('.dislike-btn[data-id="' + commentId + '"]');
+
+            if (likeBtn) {
+              likeBtn.classList.toggle('liked', likesData.userAction === 'like');
+              const likeCount = likeBtn.querySelector('span');
+              if (likeCount) likeCount.textContent = likesData.likes > 0 ? likesData.likes : '';
+            }
+
+            if (dislikeBtn) {
+              dislikeBtn.classList.toggle('disliked', likesData.userAction === 'dislike');
+              const dislikeCount = dislikeBtn.querySelector('span');
+              if (dislikeCount) dislikeCount.textContent = likesData.dislikes > 0 ? likesData.dislikes : '';
+            }
+          }
         }
       }
 
