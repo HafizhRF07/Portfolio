@@ -939,58 +939,86 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      function showReplyForm(commentId) {
+      function showReplyForm(commentId, replyToName = null, parentReplyId = null) {
         document.querySelectorAll('.reply-form').forEach(form => form.remove());
-
+      
         const commentItem = document.querySelector(`[data-comment-id="${commentId}"]`);
         if (!commentItem) return;
-
+      
         const replyForm = document.createElement('div');
         replyForm.className = 'reply-form';
+
+        const placeholderText = replyToName 
+          ? `Reply to ${replyToName}...` 
+          : 'Write your reply...';
+
         replyForm.innerHTML = `
-          <textarea placeholder="Write your reply..." class="reply-textarea"></textarea>
+          <textarea placeholder="${placeholderText}" class="reply-textarea"></textarea>
           <div class="reply-form-buttons">
             <button class="reply-submit-btn">Reply</button>
             <button class="reply-cancel-btn">Cancel</button>
           </div>
         `;
-
-        const repliesSection = commentItem.querySelector('.replies-section');
-        if (repliesSection) {
-          repliesSection.insertBefore(replyForm, repliesSection.firstChild);
+      
+        if (parentReplyId) {
+          // Nested reply - insert after the parent reply
+          const parentReplyItem = commentItem.querySelector(`[data-reply-id="${parentReplyId}"]`)?.closest('.reply-item');
+          if (parentReplyItem) {
+            let nestedContainer = parentReplyItem.querySelector('.nested-replies');
+            if (!nestedContainer) {
+              nestedContainer = document.createElement('div');
+              nestedContainer.className = 'nested-replies';
+              parentReplyItem.appendChild(nestedContainer);
+            }
+            nestedContainer.insertBefore(replyForm, nestedContainer.firstChild);
+          }
+        } else {
+          // Top-level reply
+          const repliesSection = commentItem.querySelector('.replies-section');
+          if (repliesSection) {
+            repliesSection.insertBefore(replyForm, repliesSection.firstChild);
+          }
         }
-
+      
         const textarea = replyForm.querySelector('.reply-textarea');
         const submitBtn = replyForm.querySelector('.reply-submit-btn');
         const cancelBtn = replyForm.querySelector('.reply-cancel-btn');
-
+      
         textarea.focus();
-
+      
         submitBtn.addEventListener('click', async () => {
           const replyText = textarea.value.trim();
           if (!replyText) {
             alert('Please write a reply!');
             return;
           }
-
+        
           try {
             const repliesRef = ref(database, `replies/${commentId}`);
-            await push(repliesRef, {
+            const newReplyData = {
               userId: currentUser.uid,
               userName: currentUser.displayName,
               userEmail: currentUser.email,
               userPhoto: currentUser.photoURL,
               reply: replyText,
               timestamp: Date.now()
-            });
-
+            };
+          
+            // Add parent reply info if it's a nested reply
+            if (parentReplyId) {
+              newReplyData.parentReplyId = parentReplyId;
+              newReplyData.replyToName = replyToName;
+            }
+          
+            await push(repliesRef, newReplyData);
+          
             replyForm.remove();
             alert('Reply posted successfully!');
           } catch (error) {
             alert('Failed to post reply: ' + error.message);
           }
         });
-
+      
         cancelBtn.addEventListener('click', () => {
           replyForm.remove();
         });
@@ -1003,15 +1031,15 @@ document.addEventListener("DOMContentLoaded", () => {
         onValue(repliesQuery, async (snapshot) => {
           const existingForm = repliesContainer.querySelector('.reply-form');
           repliesContainer.innerHTML = '';
-          
+
           if (existingForm) {
             repliesContainer.appendChild(existingForm);
           }
-
+        
           if (!snapshot.exists()) {
             return;
           }
-
+        
           const replies = [];
           snapshot.forEach((childSnapshot) => {
             replies.push({
@@ -1019,85 +1047,192 @@ document.addEventListener("DOMContentLoaded", () => {
               ...childSnapshot.val()
             });
           });
+        
+          // Separate top-level replies and nested replies
+          const topLevelReplies = replies.filter(r => !r.parentReplyId);
+          const nestedRepliesMap = {};
 
-          for (const replyData of replies) {
-            const replyItem = document.createElement('div');
-            replyItem.className = 'reply-item';
-
-            const timeAgo = getTimeAgo(replyData.timestamp);
-            const isOwner = currentUser && currentUser.uid === replyData.userId;
-            const isCurrentUserAdmin = currentUser && isAdmin(currentUser.email);
-            
-            const canDelete = isOwner || isCurrentUserAdmin;
-            const deleteBtn = canDelete ? `<button class="delete-reply-btn" data-comment-id="${commentId}" data-reply-id="${replyData.id}" title="Delete reply"><i class="fas fa-trash-alt"></i></button>` : '';
-            
-            const adminBadge = isAdmin(replyData.userEmail || '') ? '<span class="admin-badge">Admin</span>' : '';
-
-            const likesData = await getLikesCount(replyData.id, true, commentId);
-            const likedClass = likesData.userAction === 'like' ? 'liked' : '';
-            const dislikedClass = likesData.userAction === 'dislike' ? 'disliked' : '';
-
-            replyItem.innerHTML = `
-              <div class="reply-header">
-                <div class="reply-author-info">
-                  <img src="${replyData.userPhoto || 'https://via.placeholder.com/28'}" alt="${replyData.userName}" class="reply-avatar">
-                  <div class="reply-author">${replyData.userName}${adminBadge}</div>
-                </div>
-              </div>
-              <p class="reply-text">${replyData.reply}</p>
-              <div class="reply-footer">
-                <div class="reply-actions">
-                  <span class="reply-date">${timeAgo}</span>
-                  <div class="like-dislike-buttons">
-                    <button class="like-btn ${likedClass}" data-reply-id="${replyData.id}" data-comment-id="${commentId}">
-                      <i class="fas fa-thumbs-up"></i>
-                      <span>${likesData.likes > 0 ? likesData.likes : ''}</span>
-                    </button>
-                    <button class="dislike-btn ${dislikedClass}" data-reply-id="${replyData.id}" data-comment-id="${commentId}">
-                      <i class="fas fa-thumbs-down"></i>
-                      <span>${likesData.dislikes > 0 ? likesData.dislikes : ''}</span>
-                    </button>
-                  </div>
-                </div>
-                ${deleteBtn}
-              </div>
-            `;
-
+          replies.filter(r => r.parentReplyId).forEach(reply => {
+            if (!nestedRepliesMap[reply.parentReplyId]) {
+              nestedRepliesMap[reply.parentReplyId] = [];
+            }
+            nestedRepliesMap[reply.parentReplyId].push(reply);
+          });
+        
+          // Render top-level replies
+          for (const replyData of topLevelReplies) {
+            const replyItem = await createReplyElement(replyData, commentId, nestedRepliesMap);
             repliesContainer.appendChild(replyItem);
           }
+        
+          // Attach event listeners
+          attachReplyEventListeners(commentId);
+        });
+      }
 
-          repliesContainer.querySelectorAll('.like-btn').forEach(btn => {
-            btn.addEventListener('click', async function() {
-              const replyId = this.getAttribute('data-reply-id');
-              const commentId = this.getAttribute('data-comment-id');
-              await toggleLike(replyId, true, commentId);
-            });
-          });
+      async function createNestedReplyElement(replyData, commentId) {
+        const nestedItem = document.createElement('div');
+        nestedItem.className = 'nested-reply-item';
+            
+        const timeAgo = getTimeAgo(replyData.timestamp);
+        const isOwner = currentUser && currentUser.uid === replyData.userId;
+        const isCurrentUserAdmin = currentUser && isAdmin(currentUser.email);
+            
+        const canDelete = isOwner || isCurrentUserAdmin;
+        const deleteBtn = canDelete ? `<button class="delete-reply-btn" data-comment-id="${commentId}" data-reply-id="${replyData.id}" title="Delete reply"><i class="fas fa-trash-alt"></i></button>` : '';
+            
+        const adminBadge = isAdmin(replyData.userEmail || '') ? '<span class="admin-badge">Admin</span>' : '';
+            
+        const likesData = await getLikesCount(replyData.id, true, commentId);
+        const likedClass = likesData.userAction === 'like' ? 'liked' : '';
+        const dislikedClass = likesData.userAction === 'dislike' ? 'disliked' : '';
+            
+        const replyToText = replyData.replyToName ? `<span style="color: #00d4ff; font-size: 12px;">@${replyData.replyToName}</span> ` : '';
+            
+        nestedItem.innerHTML = `
+          <div class="reply-header">
+            <div class="reply-author-info">
+              <img src="${replyData.userPhoto || 'https://via.placeholder.com/28'}" alt="${replyData.userName}" class="reply-avatar">
+              <div class="reply-author">${replyData.userName}${adminBadge}</div>
+            </div>
+          </div>
+          <p class="reply-text">${replyToText}${replyData.reply}</p>
+          <div class="reply-footer">
+            <div class="reply-actions">
+              <span class="reply-date">${timeAgo}</span>
+              <div class="like-dislike-buttons">
+                <button class="like-btn ${likedClass}" data-reply-id="${replyData.id}" data-comment-id="${commentId}">
+                  <i class="fas fa-thumbs-up"></i>
+                  <span>${likesData.likes > 0 ? likesData.likes : ''}</span>
+                </button>
+                <button class="dislike-btn ${dislikedClass}" data-reply-id="${replyData.id}" data-comment-id="${commentId}">
+                  <i class="fas fa-thumbs-down"></i>
+                  <span>${likesData.dislikes > 0 ? likesData.dislikes : ''}</span>
+                </button>
+              </div>
+            </div>
+            ${deleteBtn}
+          </div>
+        `;
+            
+        return nestedItem;
+      }
 
-          repliesContainer.querySelectorAll('.dislike-btn').forEach(btn => {
-            btn.addEventListener('click', async function() {
-              const replyId = this.getAttribute('data-reply-id');
-              const commentId = this.getAttribute('data-comment-id');
-              await toggleDislike(replyId, true, commentId);
-            });
-          });
-
-          repliesContainer.querySelectorAll('.delete-reply-btn').forEach(btn => {
-            btn.addEventListener('click', async function() {
-              const commentId = this.getAttribute('data-comment-id');
-              const replyId = this.getAttribute('data-reply-id');
-              if (confirm('Are you sure you want to delete this reply?')) {
-                try {
-                  await remove(ref(database, `replies/${commentId}/${replyId}`));
-                  await remove(ref(database, `likes/replies/${commentId}/${replyId}`));
-                  alert('Reply deleted successfully!');
-                } catch (error) {
-                  alert('Failed to delete reply: ' + error.message);
-                }
-              }
-            });
+      function attachReplyEventListeners(commentId) {
+        const commentItem = document.querySelector(`[data-comment-id="${commentId}"]`);
+        if (!commentItem) return;
+      
+        // Like buttons for replies (both top-level and nested)
+        commentItem.querySelectorAll('.like-btn[data-reply-id]').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const replyId = this.getAttribute('data-reply-id');
+            const commentId = this.getAttribute('data-comment-id');
+            await toggleLike(replyId, true, commentId);
           });
         });
+      
+        // Dislike buttons for replies (both top-level and nested)
+        commentItem.querySelectorAll('.dislike-btn[data-reply-id]').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const replyId = this.getAttribute('data-reply-id');
+            const commentId = this.getAttribute('data-comment-id');
+            await toggleDislike(replyId, true, commentId);
+          });
+        });
+      
+        // Delete reply buttons (both top-level and nested)
+        commentItem.querySelectorAll('.delete-reply-btn').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const commentId = this.getAttribute('data-comment-id');
+            const replyId = this.getAttribute('data-reply-id');
+            if (confirm('Are you sure you want to delete this reply?')) {
+              try {
+                await remove(ref(database, `replies/${commentId}/${replyId}`));
+                await remove(ref(database, `likes/replies/${commentId}/${replyId}`));
+                alert('Reply deleted successfully!');
+              } catch (error) {
+                alert('Failed to delete reply: ' + error.message);
+              }
+            }
+          });
+        });
+      
+        // Reply to reply buttons
+        commentItem.querySelectorAll('.reply-to-reply-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            if (!currentUser) {
+              alert('Please sign in to reply!');
+              return;
+            }
+            const replyId = this.getAttribute('data-reply-id');
+            const replyName = this.getAttribute('data-reply-name');
+            showReplyForm(commentId, replyName, replyId);
+          });
+        });
+      }
+
+      async function createReplyElement(replyData, commentId, nestedRepliesMap = {}) {
+        const replyItem = document.createElement('div');
+        replyItem.className = 'reply-item';
+            
+        const timeAgo = getTimeAgo(replyData.timestamp);
+        const isOwner = currentUser && currentUser.uid === replyData.userId;
+        const isCurrentUserAdmin = currentUser && isAdmin(currentUser.email);
+            
+        const canDelete = isOwner || isCurrentUserAdmin;
+        const deleteBtn = canDelete ? `<button class="delete-reply-btn" data-comment-id="${commentId}" data-reply-id="${replyData.id}" title="Delete reply"><i class="fas fa-trash-alt"></i></button>` : '';
+            
+        const adminBadge = isAdmin(replyData.userEmail || '') ? '<span class="admin-badge">Admin</span>' : '';
+            
+        const likesData = await getLikesCount(replyData.id, true, commentId);
+        const likedClass = likesData.userAction === 'like' ? 'liked' : '';
+        const dislikedClass = likesData.userAction === 'dislike' ? 'disliked' : '';
+            
+        const replyToText = replyData.replyToName ? `<span style="color: #00d4ff; font-size: 12px;">@${replyData.replyToName}</span> ` : '';
+            
+        const replyBtn = currentUser ? `<button class="reply-to-reply-btn" data-reply-id="${replyData.id}" data-reply-name="${replyData.userName}"><i class="fas fa-reply"></i> Reply</button>` : '';
+            
+        replyItem.innerHTML = `
+          <div class="reply-header">
+            <div class="reply-author-info">
+              <img src="${replyData.userPhoto || 'https://via.placeholder.com/28'}" alt="${replyData.userName}" class="reply-avatar">
+              <div class="reply-author">${replyData.userName}${adminBadge}</div>
+            </div>
+          </div>
+          <p class="reply-text">${replyToText}${replyData.reply}</p>
+          <div class="reply-footer">
+            <div class="reply-actions">
+              <span class="reply-date">${timeAgo}</span>
+              <div class="like-dislike-buttons">
+                <button class="like-btn ${likedClass}" data-reply-id="${replyData.id}" data-comment-id="${commentId}">
+                  <i class="fas fa-thumbs-up"></i>
+                  <span>${likesData.likes > 0 ? likesData.likes : ''}</span>
+                </button>
+                <button class="dislike-btn ${dislikedClass}" data-reply-id="${replyData.id}" data-comment-id="${commentId}">
+                  <i class="fas fa-thumbs-down"></i>
+                  <span>${likesData.dislikes > 0 ? likesData.dislikes : ''}</span>
+                </button>
+              </div>
+              ${replyBtn}
+            </div>
+            ${deleteBtn}
+          </div>
+        `;
+            
+        // Add nested replies if any
+        if (nestedRepliesMap[replyData.id] && nestedRepliesMap[replyData.id].length > 0) {
+          const nestedContainer = document.createElement('div');
+          nestedContainer.className = 'nested-replies';
+          
+          for (const nestedReply of nestedRepliesMap[replyData.id]) {
+            const nestedElement = await createNestedReplyElement(nestedReply, commentId);
+            nestedContainer.appendChild(nestedElement);
+          }
+          
+          replyItem.appendChild(nestedContainer);
+        }
+      
+        return replyItem;
       }
 
       const commentsRef = ref(database, 'comments');

@@ -2078,7 +2078,7 @@
       }
 
       .reply-submit-btn {
-        background: linear-gradient(45deg, #00d4ff, #0707c4);
+        background: linear-gradient(45deg, #0707c4, #00d4ff);
         color: #fff;
       }
 
@@ -2133,6 +2133,20 @@
 
       .delete-btn:hover {
         background: rgba(255, 68, 68, 0.1);
+      }
+
+      /* Nested replies */
+      .nested-replies {
+        margin-top: 12px;
+        padding-left: 20px;
+        border-left: 2px solid rgba(0, 212, 255, 0.15);
+      }
+      
+      .nested-reply-item {
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 6px;
+        margin-bottom: 8px;
       }
     
       .empty-comments {
