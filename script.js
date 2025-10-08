@@ -867,11 +867,30 @@ document.addEventListener("DOMContentLoaded", () => {
         const likesData = await getLikesCount(commentId, isReply, parentCommentId);
 
         if (isReply) {
-          // Update reply buttons
-          const replyItem = document.querySelector(`[data-reply-id="${commentId}"][data-comment-id="${parentCommentId}"]`)?.closest('.reply-item');
-          if (replyItem) {
-            const likeBtn = replyItem.querySelector('.like-btn');
-            const dislikeBtn = replyItem.querySelector('.dislike-btn');
+          // Find the reply element using both commentId and parentCommentId
+          let replyElement = null;
+          
+          // Check if it's a nested reply
+          const nestedReply = document.querySelector(`[data-nested-reply-id="${commentId}"][data-parent-comment-id="${parentCommentId}"]`);
+          if (nestedReply) {
+            replyElement = nestedReply;
+          } else {
+            // It's a top-level reply
+            const commentItem = document.querySelector(`[data-comment-id="${parentCommentId}"]`);
+            if (commentItem) {
+              const replyItems = commentItem.querySelectorAll('.reply-item');
+              replyItems.forEach(item => {
+                const likeBtn = item.querySelector('.like-btn[data-reply-id="' + commentId + '"]');
+                if (likeBtn) {
+                  replyElement = item;
+                }
+              });
+            }
+          }
+
+          if (replyElement) {
+            const likeBtn = replyElement.querySelector('.like-btn[data-reply-id="' + commentId + '"]');
+            const dislikeBtn = replyElement.querySelector('.dislike-btn[data-reply-id="' + commentId + '"]');
 
             if (likeBtn) {
               likeBtn.classList.toggle('liked', likesData.userAction === 'like');
@@ -1073,6 +1092,8 @@ document.addEventListener("DOMContentLoaded", () => {
       async function createNestedReplyElement(replyData, commentId) {
         const nestedItem = document.createElement('div');
         nestedItem.className = 'nested-reply-item';
+        nestedItem.setAttribute('data-nested-reply-id', replyData.id);
+        nestedItem.setAttribute('data-parent-comment-id', commentId);
             
         const timeAgo = getTimeAgo(replyData.timestamp);
         const isOwner = currentUser && currentUser.uid === replyData.userId;
@@ -1089,7 +1110,6 @@ document.addEventListener("DOMContentLoaded", () => {
             
         const replyToText = replyData.replyToName ? `<span style="color: #00d4ff; font-size: 12px;">@${replyData.replyToName}</span> ` : '';
             
-        // ADDED: Tombol Reply untuk nested reply
         const replyBtn = currentUser ? `<button class="reply-to-reply-btn" data-reply-id="${replyData.id}" data-reply-name="${replyData.userName}"><i class="fas fa-reply"></i> Reply</button>` : '';
             
         nestedItem.innerHTML = `
@@ -1118,6 +1138,56 @@ document.addEventListener("DOMContentLoaded", () => {
             ${deleteBtn}
           </div>
         `;
+        
+        // CRITICAL FIX: Attach event listeners IMMEDIATELY after creating element
+        const likeBtn = nestedItem.querySelector('.like-btn');
+        const dislikeBtn = nestedItem.querySelector('.dislike-btn');
+        const replyToReplyBtn = nestedItem.querySelector('.reply-to-reply-btn');
+        const deleteReplyBtn = nestedItem.querySelector('.delete-reply-btn');
+
+        if (likeBtn) {
+          likeBtn.addEventListener('click', async function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            await toggleLike(replyData.id, true, commentId);
+          });
+        }
+
+        if (dislikeBtn) {
+          dislikeBtn.addEventListener('click', async function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            await toggleDislike(replyData.id, true, commentId);
+          });
+        }
+
+        if (replyToReplyBtn) {
+          replyToReplyBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            if (!currentUser) {
+              alert('Please sign in to reply!');
+              return;
+            }
+            showReplyForm(commentId, replyData.userName, replyData.id);
+          });
+        }
+
+        if (deleteReplyBtn) {
+          deleteReplyBtn.addEventListener('click', async function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            if (confirm('Are you sure you want to delete this reply?')) {
+              try {
+                await remove(ref(database, `replies/${commentId}/${replyData.id}`));
+                await remove(ref(database, `likes/replies/${commentId}/${replyData.id}`));
+                alert('Reply deleted successfully!');
+              } catch (error) {
+                alert('Failed to delete reply: ' + error.message);
+              }
+            }
+          });
+        }
             
         return nestedItem;
       }
