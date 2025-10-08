@@ -58,11 +58,11 @@ menuToggle.addEventListener("click", () => {
   navLinks.classList.toggle("show");
 
   if (navLinks.classList.contains("show")) {
-    menuIcon.textContent = "✖";   // ganti icon jadi X
-    menuText.classList.add("hidden"); // sembunyikan tulisan Menu
+    menuIcon.textContent = "✖";
+    menuText.classList.add("hidden");
   } else {
-    menuIcon.textContent = "☰";   // ganti icon jadi ☰
-    menuText.classList.remove("hidden"); // tampilkan kembali tulisan Menu
+    menuIcon.textContent = "☰";
+    menuText.classList.remove("hidden");
   }
 });
 
@@ -90,18 +90,15 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     const targetElement = document.querySelector(targetId);
     if (!targetElement) return;
     
-    // Trigger animasi dulu jika belum visible
     if (!targetElement.classList.contains('is-visible')) {
       targetElement.classList.add('is-visible');
     }
     
-    // Tunggu animasi selesai, baru scroll dengan offset custom per section
     setTimeout(() => {
-      let headerOffset = 100; // Default offset
+      let headerOffset = 100;
       
-      // Custom offset untuk About section
       if (targetId === '#about') {
-        headerOffset = 50; // Sesuaikan nilai ini untuk About
+        headerOffset = 50;
       } else if (targetId === '#education') {
         headerOffset = 60;
       } else if (targetId === '#portfolio') {
@@ -117,9 +114,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         top: offsetPosition,
         behavior: "smooth"
       });
-    }, 150); // Delay untuk animasi fade-in
+    }, 150);
     
-    // Tutup menu mobile
     if (navLinks.classList.contains("show")) {
       navLinks.classList.remove("show");
       menuIcon.textContent = "☰";
@@ -151,7 +147,6 @@ const skills = document.querySelector(".skills");
 if (skills) {
   const skillsContainer = document.querySelector('.skills-container');
   if (skillsContainer) {
-    // Clone 3-4 kali untuk memastikan seamless
     for (let i = 0; i < 3; i++) {
       const skillsClone = skills.cloneNode(true);
       skillsContainer.append(skillsClone);
@@ -163,10 +158,8 @@ if (skills) {
 // PORTFOLIO TABS + CAROUSEL + MODAL + FIREBASE
 // =====================
 document.addEventListener("DOMContentLoaded", () => {
-  /* ========== CONFIG ========== */
   const AUTO_INTERVAL = 3000;
 
-  /* ========== TAB SWITCHER + UNDERLINE ========== */
   const tabButtons = document.querySelectorAll(".tab-btn");
   const tabContents = document.querySelectorAll(".tab-content");
   const underline = document.querySelector(".underline");
@@ -219,15 +212,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* ========== CERTIFICATES CAROUSEL ========== */
-
   const carouselSection = document.getElementById("certificates");
   let wrapper, track, cards;
   let currentIndex = 0;
   let direction = 1;
   let autoTimer = null;
 
-  /* Setup awal */
   function safeQuery() {
     if (!carouselSection) return false;
     wrapper = carouselSection.querySelector(".certificates-wrapper");
@@ -237,13 +227,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return true;
   }
 
-  /* Hitung lebar 1 kartu (width + gap) dengan presisi */
   function getCardWidth() {
     if (!cards.length || !track) return 0;
-    return 320; // Fixed width only
+    return 320;
   }
 
-  /* Hitung lebar total semua kartu dengan presisi */
   function getTotalTrackWidth() {
     if (!cards || !cards.length || !track) return 0;
     const cardWidth = 320;
@@ -251,14 +239,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return (cardWidth * cards.length) + (gap * (cards.length - 1));
   }
 
-  /* Hitung jumlah kartu yg muat di layar */
   function getVisibleCards() {
     if (!wrapper || !cards.length) return 1;
     const wrapperWidth = wrapper.clientWidth;
     const cardWidth = 320;
     const gap = 20;
 
-    // Hitung berapa kartu yang bisa muat (dengan gap)
     let count = 0;
     let totalWidth = 0;
 
@@ -271,25 +257,19 @@ document.addEventListener("DOMContentLoaded", () => {
     return Math.max(1, count);
   }
 
-  /* Index maksimal - perhitungan yang benar */
   function getMaxIndex() {
     if (!cards || !cards.length || !wrapper) return 0;
     const totalWidth = getTotalTrackWidth();
     const wrapperWidth = wrapper.clientWidth;
 
-    // Kalau semua kartu muat, tidak perlu scroll
     if (totalWidth <= wrapperWidth) return 0;
 
-    // Hitung berapa kartu yang visible
     const visibleCount = getVisibleCards();
-
-    // Max index = total kartu - kartu yang visible
     const maxIdx = Math.max(0, cards.length - visibleCount);
 
     return maxIdx;
   }
 
-  /* Update posisi track - Hitung offset per index */
   function updateTrack() {
     if (!track || !cards || !cards.length || !wrapper) return;
     const max = getMaxIndex();
@@ -297,15 +277,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (currentIndex > max) currentIndex = max;
     if (currentIndex < 0) currentIndex = 0;
 
-    // Hitung offset: setiap index = 1 kartu bergeser
-    // Kartu width = 320px, gap = 20px
-    const offset = currentIndex * 340; // 320 + 20 = satu langkah per kartu
+    const offset = currentIndex * 340;
 
     track.style.transition = "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
     track.style.transform = `translateX(-${offset}px)`;
   }
 
-  /* Auto geser */
   function autoStep() {
     const max = getMaxIndex();
     if (max <= 0) return;
@@ -323,7 +300,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTrack();
   }
 
-  /* Mulai auto scroll */
   function startAutoScroll() {
     if (!safeQuery()) return;
     stopAutoScroll();
@@ -331,7 +307,6 @@ document.addEventListener("DOMContentLoaded", () => {
     autoTimer = setInterval(autoStep, AUTO_INTERVAL);
   }
 
-  /* Stop auto scroll */
   function stopAutoScroll() {
     if (autoTimer) {
       clearInterval(autoTimer);
@@ -339,7 +314,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* Reset auto scroll setelah manual navigasi */
   function resetAutoScroll() {
     stopAutoScroll();
     setTimeout(() => {
@@ -347,13 +321,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }, AUTO_INTERVAL);
   }
 
-  /* Tombol prev/next */
   let navButtonsAttached = false;
   
   function attachNavButtons() {
     if (!carouselSection || navButtonsAttached) return;
     
-    // Cari button dari wrapper
     const navWrapper = carouselSection.querySelector(".nav-buttons-wrapper");
     if (!navWrapper) return;
     
@@ -364,12 +336,10 @@ document.addEventListener("DOMContentLoaded", () => {
       prevBtn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log('PREV clicked. Current index BEFORE:', currentIndex);
         
         const newIndex = currentIndex - 1;
         if (newIndex >= 0) {
           currentIndex = newIndex;
-          console.log('PREV clicked. Current index AFTER:', currentIndex);
           direction = -1;
           updateTrack();
           resetAutoScroll();
@@ -381,13 +351,11 @@ document.addEventListener("DOMContentLoaded", () => {
       nextBtn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log('NEXT clicked. Current index BEFORE:', currentIndex);
         
         const maxIdx = getMaxIndex();
         const newIndex = currentIndex + 1;
         if (newIndex <= maxIdx) {
           currentIndex = newIndex;
-          console.log('NEXT clicked. Current index AFTER:', currentIndex);
           direction = 1;
           updateTrack();
           resetAutoScroll();
@@ -398,20 +366,17 @@ document.addEventListener("DOMContentLoaded", () => {
     navButtonsAttached = true;
   }
 
-  /* Pause saat hover */
   function attachHoverPause() {
     if (!wrapper) return;
     wrapper.addEventListener("mouseenter", stopAutoScroll);
     wrapper.addEventListener("mouseleave", startAutoScroll);
   }
 
-  /* === SWIPE DETECTION dengan Free Movement === */
   let swipeHandlers = null;
 
   function attachSwipe() {
     if (!track) return;
 
-    // Hapus listener lama jika ada
     if (swipeHandlers) {
       track.removeEventListener("touchstart", swipeHandlers.start);
       track.removeEventListener("touchmove", swipeHandlers.move);
@@ -424,7 +389,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentTranslate = 0;
     let prevTranslate = 0;
 
-    // Get current transform value
     function getTranslateX() {
       const style = window.getComputedStyle(track);
       const matrix = style.transform;
@@ -433,13 +397,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return parseFloat(values[4]) || 0;
     }
 
-    // Mulai drag
     const handleStart = (e) => {
       startX = e.touches[0].clientX;
       isDragging = true;
       startTime = Date.now();
 
-      // Ambil posisi transform saat ini
       prevTranslate = getTranslateX();
       currentTranslate = prevTranslate;
 
@@ -447,7 +409,6 @@ document.addEventListener("DOMContentLoaded", () => {
       stopAutoScroll();
     };
 
-    // Saat drag berlangsung - BEBAS TANPA BATASAN INDEX
     const handleMove = (e) => {
       if (!isDragging) return;
       e.preventDefault();
@@ -455,10 +416,8 @@ document.addEventListener("DOMContentLoaded", () => {
       currentX = e.touches[0].clientX;
       const diff = currentX - startX;
 
-      // Hitung translate baru
       currentTranslate = prevTranslate + diff;
 
-      // Hitung batas REAL dari konten
       const cardWidth = 320;
       const gap = 20;
       const totalWidth = (cardWidth * cards.length) + (gap * (cards.length - 1));
@@ -467,7 +426,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const minTranslate = Math.min(0, -(totalWidth - wrapperWidth));
       const maxTranslate = 0;
 
-      // Clamp hanya di batas fisik konten
       if (currentTranslate > maxTranslate) {
         currentTranslate = maxTranslate;
       } else if (currentTranslate < minTranslate) {
@@ -477,7 +435,6 @@ document.addEventListener("DOMContentLoaded", () => {
       track.style.transform = `translateX(${currentTranslate}px)`;
     };
 
-    // Saat drag dilepas - SNAP SMOOTH KE KARTU TERDEKAT
     const handleEnd = () => {
       if (!isDragging) return;
       isDragging = false;
@@ -486,17 +443,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const duration = Date.now() - startTime;
       const velocity = Math.abs(moved) / duration;
 
-      // Hitung posisi kartu yang paling visible
       const currentOffset = Math.abs(currentTranslate);
       const cardWidth = 320;
       const gap = 20;
 
-      // Hitung index berdasarkan posisi scroll
       let targetIndex = Math.round(currentOffset / (cardWidth + gap));
 
       const maxIdx = getMaxIndex();
 
-      // Jika swipe cepat, pindah index
       if (velocity > 0.4 && Math.abs(moved) > 40) {
         if (moved < 0) {
           targetIndex = Math.min(maxIdx, targetIndex + 1);
@@ -505,23 +459,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Batasi index
       targetIndex = Math.max(0, Math.min(maxIdx, targetIndex));
 
-      // Set index dan snap
       currentIndex = targetIndex;
       track.style.transition = "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
       updateTrack();
       resetAutoScroll();
     };
 
-    // Cancel drag
     const handleCancel = () => {
       if (!isDragging) return;
       isDragging = false;
       track.style.transition = "transform 0.3s ease-out";
 
-      // Snap ke index terdekat
       const currentOffset = Math.abs(getTranslateX());
       const cardWidth = 320;
       const gap = 20;
@@ -540,7 +490,6 @@ document.addEventListener("DOMContentLoaded", () => {
     track.addEventListener("touchend", handleEnd);
     track.addEventListener("touchcancel", handleCancel);
 
-    // Simpan reference untuk cleanup
     swipeHandlers = {
       start: handleStart,
       move: handleMove,
@@ -549,13 +498,11 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  /* Inisialisasi carousel */
   function initCarousel() {
     if (!safeQuery()) return;
     if (currentIndex > getMaxIndex()) currentIndex = getMaxIndex();
     updateTrack();
     
-    // Hanya attach sekali saja
     if (!navButtonsAttached) {
       attachNavButtons();
       attachHoverPause();
@@ -582,7 +529,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initCarousel();
   window.addEventListener("load", initCarousel);
 
-  /* ========== MODAL ========== */
   window.openModal = function (imgSrc) {
     const modal = document.getElementById("certificateModal");
     if (!modal) return;
@@ -606,7 +552,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ========== SHOW ALL PROJECTS ========== */
   const showAllBtn = document.getElementById("showAllBtn");
   const hiddenCards = document.querySelectorAll(".project-card.hidden");
   let isExpanded = false;
@@ -624,8 +569,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-
-  /* ========== GSAP ANIMATION ========== */
 
   function animatePortfolio(tab) {
     if (tab === "certificates") {
@@ -667,7 +610,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   
-  // Fade In Animation on Scroll
   const fadeInSections = document.querySelectorAll('.fade-in-section');
   
   const appearOptions = {
@@ -690,7 +632,6 @@ document.addEventListener("DOMContentLoaded", () => {
     appearOnScroll.observe(section);
   });
 
-  /* ========== FIREBASE ========== */
   import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js').then((firebaseApp) => {
     return Promise.all([
       import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js'),
@@ -698,7 +639,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ]).then(([firebaseAuth, firebaseDatabase]) => {
       const { initializeApp } = firebaseApp;
       const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } = firebaseAuth;
-      const { getDatabase, ref, push, onValue, query, orderByChild, remove } = firebaseDatabase;
+      const { getDatabase, ref, push, onValue, query, orderByChild, remove, get } = firebaseDatabase;
 
       const firebaseConfig = {
         apiKey: "AIzaSyCEcafrhmiztofjSsvIGysF7RRkdULfOo4",
@@ -717,6 +658,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let currentUser = null;
       let selectedRating = 0;
+
+      const ADMIN_EMAILS = [
+        'hafizhrf3072@gmail.com',
+      ];
+
+      function isAdmin(email) {
+        return ADMIN_EMAILS.includes(email);
+      }
 
       const authSection = document.getElementById('authSection');
       const ratingSection = document.getElementById('ratingSection');
@@ -841,6 +790,126 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
+      function showReplyForm(commentId) {
+        document.querySelectorAll('.reply-form').forEach(form => form.remove());
+
+        const commentItem = document.querySelector(`[data-comment-id="${commentId}"]`);
+        if (!commentItem) return;
+
+        const replyForm = document.createElement('div');
+        replyForm.className = 'reply-form';
+        replyForm.innerHTML = `
+          <textarea placeholder="Write your reply..." class="reply-textarea"></textarea>
+          <div class="reply-form-buttons">
+            <button class="reply-submit-btn">Reply</button>
+            <button class="reply-cancel-btn">Cancel</button>
+          </div>
+        `;
+
+        commentItem.appendChild(replyForm);
+
+        const textarea = replyForm.querySelector('.reply-textarea');
+        const submitBtn = replyForm.querySelector('.reply-submit-btn');
+        const cancelBtn = replyForm.querySelector('.reply-cancel-btn');
+
+        textarea.focus();
+
+        submitBtn.addEventListener('click', async () => {
+          const replyText = textarea.value.trim();
+          if (!replyText) {
+            alert('Please write a reply!');
+            return;
+          }
+
+          try {
+            const repliesRef = ref(database, `replies/${commentId}`);
+            await push(repliesRef, {
+              userId: currentUser.uid,
+              userName: currentUser.displayName,
+              userEmail: currentUser.email,
+              userPhoto: currentUser.photoURL,
+              reply: replyText,
+              timestamp: Date.now()
+            });
+
+            replyForm.remove();
+            alert('Reply posted successfully!');
+          } catch (error) {
+            alert('Failed to post reply: ' + error.message);
+          }
+        });
+
+        cancelBtn.addEventListener('click', () => {
+          replyForm.remove();
+        });
+      }
+
+      async function loadReplies(commentId, repliesContainer) {
+        const repliesRef = ref(database, `replies/${commentId}`);
+        const repliesQuery = query(repliesRef, orderByChild('timestamp'));
+
+        onValue(repliesQuery, (snapshot) => {
+          repliesContainer.innerHTML = '';
+
+          if (!snapshot.exists()) {
+            return;
+          }
+
+          const replies = [];
+          snapshot.forEach((childSnapshot) => {
+            replies.push({
+              id: childSnapshot.key,
+              ...childSnapshot.val()
+            });
+          });
+
+          replies.forEach(replyData => {
+            const replyItem = document.createElement('div');
+            replyItem.className = 'reply-item';
+
+            const timeAgo = getTimeAgo(replyData.timestamp);
+            const isOwner = currentUser && currentUser.uid === replyData.userId;
+            const isCurrentUserAdmin = currentUser && isAdmin(currentUser.email);
+            
+            const canDelete = isOwner || isCurrentUserAdmin;
+            const deleteBtn = canDelete ? `<button class="delete-reply-btn" data-comment-id="${commentId}" data-reply-id="${replyData.id}" title="Delete reply"><i class="fas fa-trash-alt"></i></button>` : '';
+            
+            const adminBadge = isAdmin(replyData.userEmail || '') ? '<span class="admin-badge">Admin</span>' : '';
+
+            replyItem.innerHTML = `
+              <div class="reply-header">
+                <div class="reply-author-info">
+                  <img src="${replyData.userPhoto || 'https://via.placeholder.com/32'}" alt="${replyData.userName}" class="reply-avatar">
+                  <span class="reply-author">${replyData.userName}${adminBadge}</span>
+                </div>
+              </div>
+              <p class="reply-text">${replyData.reply}</p>
+              <div class="reply-footer">
+                <span class="reply-date">${timeAgo}</span>
+                ${deleteBtn}
+              </div>
+            `;
+
+            repliesContainer.appendChild(replyItem);
+          });
+
+          repliesContainer.querySelectorAll('.delete-reply-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+              const commentId = this.getAttribute('data-comment-id');
+              const replyId = this.getAttribute('data-reply-id');
+              if (confirm('Are you sure you want to delete this reply?')) {
+                try {
+                  await remove(ref(database, `replies/${commentId}/${replyId}`));
+                  alert('Reply deleted successfully!');
+                } catch (error) {
+                  alert('Failed to delete reply: ' + error.message);
+                }
+              }
+            });
+          });
+        });
+      }
+
       const commentsRef = ref(database, 'comments');
       const commentsQuery = query(commentsRef, orderByChild('timestamp'));
 
@@ -864,6 +933,7 @@ document.addEventListener("DOMContentLoaded", () => {
         comments.reverse().forEach(data => {
           const commentItem = document.createElement('div');
           commentItem.className = 'comment-item';
+          commentItem.setAttribute('data-comment-id', data.id);
 
           let starsHTML = '';
           for (let i = 1; i <= 5; i++) {
@@ -872,37 +942,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const timeAgo = getTimeAgo(data.timestamp);
           const isOwner = currentUser && currentUser.uid === data.userId;
-          const deleteBtn = isOwner ? `<button class="delete-btn" data-id="${data.id}" title="Delete comment"><i class="fas fa-trash-alt"></i></button>` : '';
+          const isCurrentUserAdmin = currentUser && isAdmin(currentUser.email);
+          
+          const canDelete = isOwner || isCurrentUserAdmin;
+          const deleteBtn = canDelete ? `<button class="delete-btn" data-id="${data.id}" title="Delete comment"><i class="fas fa-trash-alt"></i></button>` : '';
+          
+          const replyBtn = currentUser && !isOwner ? `<button class="reply-btn" data-id="${data.id}"><i class="fas fa-reply"></i> Reply</button>` : '';
+          
+          const adminBadge = isAdmin(data.userEmail || '') ? '<span class="admin-badge">Admin</span>' : '';
 
           commentItem.innerHTML = `
             <div class="comment-header">
               <div class="comment-author-info">
                 <img src="${data.userPhoto || 'https://via.placeholder.com/40'}" alt="${data.userName}" class="comment-avatar">
-                <span class="comment-author">${data.userName}</span>
+                <span class="comment-author">${data.userName}${adminBadge}</span>
               </div>
               <div class="comment-stars">${starsHTML}</div>
             </div>
             <p class="comment-text">${data.comment}</p>
             <div class="comment-footer">
-              <span class="comment-date">${timeAgo}</span>
+              <div>
+                <span class="comment-date">${timeAgo}</span>
+                ${replyBtn}
+              </div>
               ${deleteBtn}
             </div>
+            <div class="replies-section"></div>
           `;
 
           commentsList.appendChild(commentItem);
+
+          const repliesContainer = commentItem.querySelector('.replies-section');
+          loadReplies(data.id, repliesContainer);
         });
 
-        // Event listener untuk delete button
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', async function() {
             const commentId = this.getAttribute('data-id');
             if (confirm('Are you sure you want to delete this comment?')) {
               try {
                 await remove(ref(database, `comments/${commentId}`));
+                await remove(ref(database, `replies/${commentId}`));
               } catch (error) {
                 alert('Failed to delete: ' + error.message);
               }
             }
+          });
+        });
+
+        document.querySelectorAll('.reply-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            if (!currentUser) {
+              alert('Please sign in to reply!');
+              return;
+            }
+            const commentId = this.getAttribute('data-id');
+            showReplyForm(commentId);
           });
         });
       });
