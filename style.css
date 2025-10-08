@@ -1906,7 +1906,7 @@
         gap: 8px;
       }
 
-.like-btn, .dislike-btn {
+      .like-btn, .dislike-btn {
         background: transparent;
         border: none;
         color: #b0b8c4;
@@ -1918,6 +1918,7 @@
         padding: 4px 8px;
         border-radius: 4px;
         transition: all 0.3s ease;
+        pointer-events: auto; /* FIXED: Enable clicking */
       }
 
       .like-btn:hover {
@@ -1932,6 +1933,11 @@
 
       .like-btn i, .dislike-btn i {
         font-size: 14px;
+        pointer-events: none; /* FIXED: Prevent icon from blocking click */
+      }
+
+      .like-btn span, .dislike-btn span {
+        pointer-events: none; /* FIXED: Prevent span from blocking click */
       }
 
       .like-btn.liked {

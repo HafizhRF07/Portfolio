@@ -990,7 +990,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="reply-header">
                 <div class="reply-author-info">
                   <img src="${replyData.userPhoto || 'https://via.placeholder.com/28'}" alt="${replyData.userName}" class="reply-avatar">
-                  <span class="reply-author">${replyData.userName}${adminBadge}</span>
+                  <div class="reply-author">${replyData.userName}${adminBadge}</div>
                 </div>
               </div>
               <p class="reply-text">${replyData.reply}</p>
