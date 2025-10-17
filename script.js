@@ -162,6 +162,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabContents = document.querySelectorAll(".tab-content");
   const underline = document.querySelector(".underline");
 
+  // State untuk track apakah certificate section sudah visible
+  let isCertificateSectionVisible = false;
+
   tabContents.forEach((t) => (t.style.display = "none"));
   const defaultBtn = document.querySelector(".tab-btn.active") || tabButtons[0];
   if (defaultBtn) {
@@ -205,8 +208,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       moveUnderline(btn);
 
-      if (id === "certificates") startAutoScroll();
-      else stopAutoScroll();
+      // MODIFIED: Hanya start auto-scroll jika section sudah visible
+      if (id === "certificates") {
+        if (isCertificateSectionVisible) {
+          startAutoScroll();
+        }
+      } else {
+        stopAutoScroll();
+      }
     });
   });
 
@@ -302,6 +311,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!safeQuery()) return;
     stopAutoScroll();
     if (getMaxIndex() <= 0) return;
+    
+    // ADDED: Check visibility state before starting
+    if (!isCertificateSectionVisible) return;
+    
     autoTimer = setInterval(autoStep, AUTO_INTERVAL);
   }
 
@@ -317,6 +330,39 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       startAutoScroll();
     }, AUTO_INTERVAL);
+  }
+
+  // =====================
+  // INTERSECTION OBSERVER FOR CERTIFICATE SECTION
+  // =====================
+  const certificateObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Certificate section is now visible
+        isCertificateSectionVisible = true;
+        
+        // Check if certificate tab is active
+        const activeTab = document.querySelector(".tab-btn.active")?.dataset.target;
+        if (activeTab === "certificates") {
+          // Delay untuk memberikan waktu animasi fade-in selesai
+          setTimeout(() => {
+            startAutoScroll();
+          }, 800); // 800ms delay = waktu animasi fade-in selesai
+        }
+        
+        // Unobserve setelah pertama kali terlihat
+        certificateObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.2, // Trigger saat 20% section visible
+    rootMargin: "0px 0px -50px 0px"
+  });
+
+  // Observe portfolio section
+  const portfolioSection = document.querySelector('.portfolio-section');
+  if (portfolioSection) {
+    certificateObserver.observe(portfolioSection);
   }
 
   let navButtonsAttached = false;
@@ -367,7 +413,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function attachHoverPause() {
     if (!wrapper) return;
     wrapper.addEventListener("mouseenter", stopAutoScroll);
-    wrapper.addEventListener("mouseleave", startAutoScroll);
+    wrapper.addEventListener("mouseleave", () => {
+      // MODIFIED: Only restart if section is visible
+      if (isCertificateSectionVisible) {
+        startAutoScroll();
+      }
+    });
   }
 
   let swipeHandlers = null;
@@ -507,8 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
       attachSwipe();
     }
     
-    const activeTab = document.querySelector(".tab-btn.active")?.dataset.target;
-    if (activeTab === "certificates") startAutoScroll();
+    // MODIFIED: Don't auto-start here, wait for intersection observer
   }
 
   let resizeTimer = null;
@@ -527,20 +577,44 @@ document.addEventListener("DOMContentLoaded", () => {
   initCarousel();
   window.addEventListener("load", initCarousel);
 
-  window.openModal = function (imgSrc) {
+  window.openModal = function (src, type) {
     const modal = document.getElementById("certificateModal");
     if (!modal) return;
-    modal.style.display = "block";
+
     const modalImg = document.getElementById("modalImg");
-    if (modalImg) modalImg.src = imgSrc;
+    const modalPdf = document.getElementById("modalPdf");
+
+    modal.style.display = "block";
     document.body.style.overflow = "hidden";
+
+    // Cek tipe file
+    if (type === 'pdf') {
+      // Tampilkan PDF, sembunyikan gambar
+      if (modalImg) modalImg.style.display = "none";
+      if (modalPdf) {
+        modalPdf.style.display = "block";
+        modalPdf.src = src;
+      }
+    } else {
+      // Tampilkan gambar, sembunyikan PDF
+      if (modalPdf) modalPdf.style.display = "none";
+      if (modalImg) {
+        modalImg.style.display = "block";
+        modalImg.src = src;
+      }
+    }
   };
 
   window.closeModal = function () {
     const modal = document.getElementById("certificateModal");
     if (!modal) return;
+
     modal.style.display = "none";
     document.body.style.overflow = "";
+
+    // Clear sources saat close
+    const modalPdf = document.getElementById("modalPdf");
+    if (modalPdf) modalPdf.src = "";
   };
 
   const modalEl = document.getElementById("certificateModal");

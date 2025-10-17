@@ -1136,41 +1136,119 @@
                         MODAL
       ======================================== */
       .modal {
-        display: none;
+        display: none !important;
         position: fixed;
         z-index: 9999;
-        padding-top: 80px;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.85);
+        background: rgba(0, 0, 0, 0.95);
         overflow: auto;
-        padding: 60px 0;
+        padding: 0;
+        margin: 0;
+        animation: fadeIn 0.3s ease;
+        visibility: hidden !important; 
+        opacity: 0 !important; 
+        pointer-events: none !important; 
       }
 
+      .modal[style*="display: block"] {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      
       .modal-content {
         margin: auto;
-        display: block;
-        max-width: 90%;
-        max-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 20px;
+      }
+      
+      /* Khusus untuk PDF */
+      #modalPdf {
+        width: 45vw;
+        height: 79vh;
+        max-width: 1400px;
+        max-height: 800px;
+        border: none;
+        background: white;
         border-radius: 20px;
         box-shadow: 0 0 25px rgba(4, 245, 213, 0.671);
+        animation: slideIn 0.3s ease;
+        display: none !important;
       }
-
+      
+      #modalPdf[style*="display: block"] {
+        display: block !important;
+      }
+      
+      /* Khusus untuk gambar */
+      #modalImg {
+        object-fit: contain;
+        max-width: 90vw;
+        max-height: 90vh;
+        width: auto;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 0 25px rgba(4, 245, 213, 0.671);
+        animation: slideIn 0.3s ease;
+        display: none !important;
+      }
+      
+      #modalImg[style*="display: block"] {
+        display: block !important;
+      }
+      
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      
       .close {
-        position: absolute;
+        position: fixed;
         top: 25px;
         right: 40px;
         color: #fff;
         font-size: 40px;
         font-weight: bold;
         cursor: pointer;
-        transition: 0.3s;
+        transition: all 0.3s ease;
+        z-index: 10000;
+        background: rgba(0, 0, 0, 0.5);
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
       }
-
+      
       .close:hover {
         color: #0ff;
+        background: rgba(0, 0, 0, 0.8);
+        transform: rotate(90deg);
       }
 
       /* ========================================
@@ -1933,11 +2011,11 @@
 
       .like-btn i, .dislike-btn i {
         font-size: 14px;
-        pointer-events: none; /* FIXED: Prevent icon from blocking click */
+        pointer-events: none; 
       }
 
       .like-btn span, .dislike-btn span {
-        pointer-events: none; /* FIXED: Prevent span from blocking click */
+        pointer-events: none; 
       }
 
       .like-btn.liked {
@@ -1991,7 +2069,7 @@
         color: #fff;
         display: flex;
         align-items: center;
-        gap: 8px; /* FIXED: Same spacing as comment-author */
+        gap: 8px; 
       }
 
       .reply-text {
@@ -2113,7 +2191,7 @@
 
       .reply-btn:hover {
         color: #00d4ff;
-        transform: scale(1.08); /* FIXED: Hover memperbesar tombol sedikit */
+        transform: scale(1.08); 
       }
 
       .reply-btn i {
@@ -2172,7 +2250,7 @@
       }
 
       .reply-to-reply-btn i {
-        pointer-events: none; /* Icon size default, sama dengan .reply-btn */
+        pointer-events: none; 
       }
       .empty-comments {
         text-align: center;
@@ -2186,6 +2264,31 @@
       }
     
       @media (max-width: 1024px) {
+        .modal-content {
+            padding: 20px;
+        }
+      
+        #modalPdf {
+            width: 92vw;
+            height: 82vh;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 16px;
+        }
+      
+        #modalImg {
+            max-width: 96vw;
+            max-height: 88vh;
+        }
+      
+        .close {
+            top: 18px;
+            right: 18px;
+            font-size: 34px;
+            width: 44px;
+            height: 44px;
+        }
+
         .contact-grid {
           grid-template-columns: 1fr;
         }
@@ -2280,7 +2383,7 @@
           flex-wrap: wrap;
         }
 
-        /* Footer Social - Same style as hero social-links */
+        
         .footer-social * {
           margin: 0;
           padding: 0;
@@ -2443,20 +2546,20 @@
         }
 
         .footer-contact li i {
-          margin-top: 3px; /* atur nilainya sesuai kebutuhan */
+          margin-top: 3px; 
         }
 
 
         .footer-contact li i.fa-envelope {
-          color: #165199; /* Email biru tua */
+          color: #165199; 
         }
 
         .footer-contact li i.fa-whatsapp {
-          color: #1fad53; /* WhatsApp hijau */
+          color: #1fad53; 
         }
 
         .footer-contact li i.fa-location-dot {
-          color: #e60303; /* Location merah */
+          color: #e60303; 
         }
 
         .footer-contact li a {
@@ -2466,11 +2569,11 @@
         }
 
         .footer-contact li a:hover {
-          color: #00d4ff;   /* teks jadi biru */
+          color: #00d4ff;   
         }
 
         .footer-contact li a:hover i {
-          color: inherit; /* biar ikon tetap pakai warna spesifiknya */
+          color: inherit; 
         }
 
 
@@ -2503,10 +2606,10 @@
         .highlight-text {
           font-weight: 600;
           background: linear-gradient(45deg, #00d4ff, #0707c4);
-          background-clip: text;          /* standar */
-          -webkit-background-clip: text;  /* untuk WebKit (Chrome, Safari, Edge baru) */
-          -webkit-text-fill-color: transparent; /* bikin teks transparan agar gradient muncul */
-          color: transparent; /* fallback kalau browser support background-clip standar */
+          background-clip: text;          
+          -webkit-background-clip: text;  
+          -webkit-text-fill-color: transparent; 
+          color: transparent; 
         }
 
 
@@ -2562,6 +2665,20 @@
         #certificates .nav-btn.right {
           margin-left: 20px;
           margin-right: -3px !important;
+        }
+      }
+
+      @media (max-width: 480px) {
+        #modalPdf {
+          width: 98%;
+          height: 70vh;
+          border-radius: 12px;
+        }
+      
+        .close {
+          top: 10px;
+          right: 15px;
+          font-size: 28px;
         }
       }
       
@@ -2899,6 +3016,31 @@
           margin-right: -3px !important;
         }
 
+        .modal-content {
+            padding: 40px 20px;
+        }
+
+        #modalPdf {
+            width: 90vw;
+            height: 80vh;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 18px;
+        }
+
+        #modalImg {
+            max-width: 95vw;
+            max-height: 90vh;
+        }
+
+        .close {
+            top: 20px;
+            right: 30px;
+            font-size: 36px;
+            width: 45px;
+            height: 45px;
+        }
+
         /* PERBAIKAN: Projects section di tablet - REMOVE EXTRA SPACE */
         #projects {
           contain: layout style;
@@ -3165,14 +3307,14 @@
 
         .hero .subtitle {
           font-size: 0.9rem;
-          white-space: normal; /* Ubah dari nowrap */
+          white-space: normal; 
           line-height: 1.4;
-          max-width: 280px; /* Batasi lebar untuk memaksa wrap */
+          max-width: 280px; 
           margin-left: auto;
           margin-right: auto;
           text-align: center;
-          height: auto; /* Ubah dari fixed height */
-          min-height: 2.8em; /* Minimum tinggi untuk 2 baris */
+          height: auto; 
+          min-height: 2.8em; 
         }
       
         .hero-image {
@@ -3494,6 +3636,43 @@
           margin-left: 12px !important;
           margin-right: 0 !important;
         }
+
+        .modal {
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #modalPdf {
+            width: 95vw;
+            height: 75vh;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 15px;
+        }
+
+        #modalImg {
+            max-width: 98vw;
+            max-height: 80vh;
+        }
+            
+        .close {
+            top: 15px;
+            right: 15px;
+            font-size: 32px;
+            width: 42px;
+            height: 42px;
+        }
       
         /* PERBAIKAN: Projects section di mobile - REMOVE EXTRA SPACE */
         #projects {
@@ -3548,7 +3727,6 @@
           transition: opacity 0.3s ease;
         }
       
-        /* PERBAIKAN: Tab content isolation di mobile */
         .tab-content {
           padding: 0 !important;
           margin: 0 !important;
@@ -3564,12 +3742,12 @@
       
         .menu-toggle {
           display: block; 
-          font-size: 25px; /* kecilkan ukuran icon */ 
+          font-size: 25px; 
           cursor: pointer;
         }
       
         .menu-toggle .menu-text {
-          display: none;         /* tulisan Menu lebih kecil */
+          display: none;         
         }
       
         .nav-links {
@@ -3694,7 +3872,7 @@
         }
       
         .footer-links li a::before {
-          display: none; /* Hide arrow on mobile for cleaner look */
+          display: none; 
         }
       
         .footer-contact {
@@ -3703,7 +3881,7 @@
         }
       
         .footer-contact li {
-          flex-direction: row; /* Icon di samping teks */
+          flex-direction: row; 
           justify-content: center;
           text-align: left;
           gap: 10px;
@@ -3713,8 +3891,8 @@
         .footer-contact li i {
           margin-top: 0;
           font-size: 18px;
-          flex-shrink: 0; /* Agar icon tidak menyusut */
-          width: 20px; /* Lebar tetap untuk alignment yang rapi */
+          flex-shrink: 0; 
+          width: 20px; 
           text-align: center;
         }
       

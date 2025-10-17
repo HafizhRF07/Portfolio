@@ -214,7 +214,51 @@
         <div class="certificates-wrapper">
           <div class="certificates-track">
             <div class="certificate-card">
-              <img src="images/Sertifikat/Python DS.jpg" alt="Certificate 1" />
+              <img src="images/Sertifikat/Python.jpg" alt="Certificate 1" />
+              <div class="certificate-info">
+                <h3>Mulai Pemrograman Python</h3>
+                <p>Dicoding - 2025</p>
+                  <a href="javascript:void(0)" 
+                     onclick="openModal('images/Sertifikat/pdf/Python.pdf', 'pdf')">
+                     View Certificate
+                  </a>
+              </div>
+            </div>
+            <div class="certificate-card">
+              <img src="images/Sertifikat/SQL.jpg" alt="Certificate 2" />
+              <div class="certificate-info">
+                <h3>Belajar Dasar SQL</h3>
+                <p>Dicoding - 2025</p>
+                  <a href="javascript:void(0)" 
+                     onclick="openModal('images/Sertifikat/pdf/SQL.pdf', 'pdf')">
+                     View Certificate
+                  </a>
+              </div>
+            </div>
+            <div class="certificate-card">
+              <img src="images/Sertifikat/DS.jpg" alt="Certificate 3" />
+              <div class="certificate-info">
+                <h3>Belajar Dasar Data Science</h3>
+                <p>Dicoding - 2025</p>
+                  <a href="javascript:void(0)" 
+                     onclick="openModal('images/Sertifikat/pdf/DS.pdf', 'pdf')">
+                     View Certificate
+                  </a>
+              </div>
+            </div>
+            <div class="certificate-card">
+              <img src="images/Sertifikat/AI.jpg" alt="Certificate 4" />
+              <div class="certificate-info">
+                <h3>Belajar Dasar AI</h3>
+                <p>Dicoding - 2025</p>
+                  <a href="javascript:void(0)" 
+                     onclick="openModal('images/Sertifikat/pdf/AI.pdf', 'pdf')">
+                     View Certificate
+                  </a>
+              </div>
+            </div>
+            <div class="certificate-card">
+              <img src="images/Sertifikat/Python DS.jpg" alt="Certificate 5" />
               <div class="certificate-info">
                 <h3>Python Data Science</h3>
                 <p>DQLab - 2021</p>
@@ -226,7 +270,7 @@
               </div>
             </div>
             <div class="certificate-card">
-              <img src="images/Sertifikat/R DS.jpg" alt="Certificate 2" />
+              <img src="images/Sertifikat/R DS.jpg" alt="Certificate 6" />
               <div class="certificate-info">
                 <h3>R Data Science</h3>
                 <p>DQLab - 2021</p>
@@ -238,7 +282,7 @@
               </div>
             </div>
             <div class="certificate-card">
-              <img src="images/Sertifikat/DSDA.jpg" alt="Certificate 3" />
+              <img src="images/Sertifikat/DSDA.jpg" alt="Certificate 7" />
               <div class="certificate-info">
                 <h3>Data Analyst</h3>
                 <p>DSDA - 2025</p>
@@ -250,7 +294,7 @@
               </div>
             </div>
             <div class="certificate-card">
-              <img src="images/Sertifikat/Azure.jpg" alt="Certificate 4" />
+              <img src="images/Sertifikat/Azure.jpg" alt="Certificate 8" />
               <div class="certificate-info">
                 <h3>Azure AI-900</h3>
                 <p>elevAIte - 2025</p>
@@ -272,7 +316,8 @@
       <!-- Modal -->
       <div id="certificateModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
-        <img class="modal-content" id="modalImg" />
+        <img class="modal-content" id="modalImg" style="display:none;" />
+        <iframe class="modal-content" id="modalPdf" style="display:none;"></iframe>
       </div>
 
       <!-- Projects Section -->
