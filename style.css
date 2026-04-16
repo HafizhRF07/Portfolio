@@ -669,7 +669,7 @@
         line-height: 1;
       }
 
-      /* Divider - Jarak yang konsisten */
+      /* Divider */
       .divider {
         border: none;
         height: 3px;
@@ -719,7 +719,7 @@
           padding: 30px 0;
         }
 
-        /* Timeline Line - DIPERBAIKI */
+        /* Timeline Line */
         .timeline::before {
           content: '';
           position: absolute;
@@ -736,7 +736,7 @@
           );
         }
 
-        /* Timeline Item - DIPERBAIKI */
+        /* Timeline Item */
         .timeline-item {
           position: relative;
           margin-bottom: 60px;
@@ -756,7 +756,7 @@
         .timeline-item:nth-child(2) { animation-delay: 0.4s; }
         .timeline-item:nth-child(3) { animation-delay: 0.6s; }
 
-        /* ===== FADE IN ANIMATION - DIPERBAIKI ===== */
+        /* FADE IN ANIMATION */
         @keyframes fadeInUp {
           from {
             opacity: 0;
@@ -905,7 +905,7 @@
       }
 
 
-      /* ===== PORTFOLIO SECTION ===== */
+      /* PORTFOLIO SECTION */
       .portfolio-section {
         padding: 10px 0 60px 0;
         text-align: center;
@@ -988,9 +988,7 @@
         transition: opacity 0.3s ease;
       }
 
-      /* ========================================
-         CERTIFICATES SECTION - FIXED
-         ======================================== */
+      /* == CERTIFICATES SECTION == */
       #certificates {
         width: 100%;
         max-width: 1100px;
@@ -999,16 +997,16 @@
         position: relative;
         padding: 0 45px;
         padding-bottom: 0;
-        overflow: hidden; /* ADDED: Prevent overflow */
-        contain: layout style paint; /* ADDED: Isolasi sempurna */
+        overflow: hidden;
+        contain: layout style paint;
       }
 
       #certificates .certificates-wrapper {
         width: 100%;
         margin: 0 auto;
         overflow: hidden;
-        position: relative; /* ADDED */
-        isolation: isolate; /* ADDED: Create stacking context */
+        position: relative; 
+        isolation: isolate; 
       }
 
       #certificates .certificates-track {
@@ -1017,7 +1015,7 @@
         transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         will-change: transform;
         gap: 21px;
-        touch-action: pan-y pinch-zoom; /* ADDED: Better touch handling */
+        touch-action: pan-y pinch-zoom; 
       }
 
       #certificates .certificate-card {
@@ -1030,8 +1028,8 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         display: flex;
         flex-direction: column;
-        position: relative; /* ADDED */
-        contain: layout style paint; /* ADDED: Prevent bleeding */
+        position: relative; 
+        contain: layout style paint; 
       }
 
       #certificates .certificate-card:hover {
@@ -1091,7 +1089,7 @@
         color: #ffffff !important;
       }
 
-      /* Navigation buttons - DEFAULT (Laptop/Desktop) */
+      /* Navigation buttons */
       #certificates .nav-btn {
         position: relative;
         background: #00d4ff;
@@ -1119,7 +1117,7 @@
         margin-right: 50px;
       }
 
-      /* CRITICAL: Wrapper untuk button positioning di mobile/tablet */
+      /* CRITICAL */
       .nav-buttons-wrapper {
         position: absolute;
         top: 50%;
@@ -1132,9 +1130,7 @@
         z-index: 10;
       }
 
-      /* ========================================
-                        MODAL
-      ======================================== */
+      /* == MODAL == */
       .modal {
         display: none !important;
         position: fixed;
@@ -1180,7 +1176,7 @@
         padding: 20px;
       }
       
-      /* Khusus untuk PDF */
+      /* PDF */
       #modalPdf {
         width: 45vw;
         height: 79vh;
@@ -1198,7 +1194,7 @@
         display: block !important;
       }
       
-      /* Khusus untuk gambar */
+      /* Gambar */
       #modalImg {
         object-fit: contain;
         max-width: 90vw;
@@ -1251,13 +1247,11 @@
         transform: rotate(90deg);
       }
 
-      /* ========================================
-         PROJECTS SECTION - FIXED
-         ======================================== */
+      /* === PROJECTS SECTION === */
       #projects {
-        position: relative; /* ADDED */
-        overflow: visible; /* ADDED */
-        contain: layout style; /* ADDED: Isolasi */
+        position: relative; 
+        overflow: visible; 
+        contain: layout style; 
         margin-bottom: -50px;
       }
 
@@ -1286,8 +1280,8 @@
         display: flex;
         flex-direction: column;
         height: 100%;
-        position: relative; /* ADDED */
-        contain: layout style; /* ADDED: Prevent bleeding */
+        position: relative; 
+        contain: layout style; 
       }
 
       .project-card:hover {
@@ -1407,9 +1401,7 @@
         display: none;
       }
 
-      /* ========================================
-         SKILLS SECTION - FIXED
-         ======================================== */
+      /* === SKILLS SECTION === */
       #skills {
         position: relative;
         overflow: visible;
@@ -1424,13 +1416,13 @@
         margin-bottom: 0;
         overflow: hidden;
         display: flex;
-        gap: 4rem; /* Jarak antar set duplikat */
+        gap: 4rem; 
       }
 
       .skills {
         display: flex;
         flex-shrink: 0;
-        gap: 4rem; /* Jarak antar icon */
+        gap: 4rem; 
         animation: infinite-scroll 5s linear infinite; 
       }
 
@@ -1446,13 +1438,11 @@
       }
 
       .skill-chip {
-        position: relative; /* ADDED */
-        contain: layout style; /* ADDED: Prevent bleeding */
+        position: relative; 
+        contain: layout style; 
       }
 
-      /* ========================================
-         TAB CONTENT ISOLATION - CRITICAL FIXES
-         ======================================== */
+      /* ==== TAB CONTENT ISOLATION === */
       .portfolio-section {
         position: relative;
         overflow: hidden;
@@ -1466,7 +1456,6 @@
         box-sizing: border-box;
       }
 
-      /* Saat tab tidak aktif - MAKSIMALKAN PROTEKSI */
       .tab-content:not([style*="display: block"]) {
         display: none !important;
         visibility: hidden !important;
@@ -1486,7 +1475,6 @@
         display: none !important;
       }
 
-      /* Saat tab aktif */
       .tab-content[style*="display: block"] {
         z-index: 1 !important;
         position: relative !important;
@@ -1545,7 +1533,7 @@
         font-weight: 700;
         margin-bottom: 50px;
         margin-top: 60px;
-        color: white; /* default putih */
+        color: white; 
       }
       
       .section-title .highlight {
@@ -1996,7 +1984,7 @@
         padding: 4px 8px;
         border-radius: 4px;
         transition: all 0.3s ease;
-        pointer-events: auto; /* FIXED: Enable clicking */
+        pointer-events: auto; 
       }
 
       .like-btn:hover {
@@ -2308,7 +2296,7 @@
         }
       }
             
-        /* ================= FOOTER SECTION ================= */
+        /* === FOOTER SECTION === */
         .footer {
           background: rgba(26, 26, 46, 0.95);
           backdrop-filter: blur(10px);
@@ -2614,8 +2602,8 @@
 
 
 
-      /* ================= RESPONSIVE DESIGN ================= */
-            /* Tablet Specific Sizes - Extra Fine Tuning */
+      /* === RESPONSIVE DESIGN === */
+            /* Tablet */
       @media (min-width: 800px) and (max-width: 834px) {
         #certificates .certificates-wrapper {
           max-width: 660px !important;
@@ -2682,7 +2670,7 @@
         }
       }
       
-      /* Mobile Specific Sizes - Extra Fine Tuning */
+      /* Mobile */
       @media (min-width: 414px) and (max-width: 430px) {
         .animated-card {
           width: 250px;
@@ -2712,7 +2700,7 @@
         }
       }
       
-      /* Tablet (max-width: 992px) */
+      /* Tablet (992px) */
       @media (max-width: 992px) and (min-width: 577px) {
         .logo img {
           margin-left: 15px;
@@ -2853,7 +2841,7 @@
         }
 
         .education-section {
-          margin-top: 20px; /* geser ke bawah */
+          margin-top: 20px; 
         }
 
         .education-section h2 {
@@ -2921,7 +2909,6 @@
           font-size: 1.1rem;
         }
       
-        /* PERBAIKAN: Certificates section di tablet */
         #certificates {
           position: relative !important;
           display: flex !important;
@@ -2937,7 +2924,7 @@
       
         #certificates .certificates-wrapper {
           width: 100% !important;
-          max-width: 680px !important; /* FIXED: 2 cards (320 x 2 + gap 20 + padding) */
+          max-width: 680px !important; 
           flex-basis: 100% !important;
           order: 1 !important;
           contain: layout style paint;
@@ -3041,7 +3028,6 @@
             height: 45px;
         }
 
-        /* PERBAIKAN: Projects section di tablet - REMOVE EXTRA SPACE */
         #projects {
           contain: layout style;
           overflow-x: hidden;
@@ -3057,7 +3043,6 @@
           margin: 0 auto !important;
         }
       
-        /* PERBAIKAN: Skills section di tablet - REMOVE EXTRA SPACE */
         #skills {
           contain: layout style;
           padding: 0 !important;
@@ -3088,7 +3073,6 @@
           transition: opacity 0.3s ease;
         }
       
-        /* PERBAIKAN: Tab content isolation di tablet */
         .tab-content {
           position: relative;
           min-height: 0 !important;
@@ -3171,7 +3155,7 @@
       
         .footer-about {
           max-width: 100%;
-          grid-column: 1 / -1; /* Span full width */
+          grid-column: 1 / -1; 
         }
       
         .footer-logo {
@@ -3272,11 +3256,11 @@
 
       
 
-      /* Mobile (max-width: 576px) */
+      /* Mobile (576px) */
       @media (max-width: 576px) {
-        /* PERBAIKAN: Prevent horizontal scroll */
+        
         body {
-          overflow-x: hidden; /* ADDED */
+          overflow-x: hidden; 
         }
       
         .logo img {
@@ -3473,7 +3457,6 @@
           min-height: auto;
         }
 
-        /* ADDED: Force semua timeline content rata kiri */
         .timeline-item.left .timeline-content,
         .timeline-item.right .timeline-content {
           text-align: left !important;
@@ -3485,7 +3468,6 @@
           height: 16px;
         }
       
-        /* Timeline content - FULL WIDTH agar tidak terpotong */
         .timeline-content {
           padding: 20px 18px;
           width: 100%;
@@ -3493,7 +3475,6 @@
           min-height: auto;
         }
       
-        /* Arrow pointer tetap di kiri */
         .timeline-content::before {
           left: -24px !important;
           right: auto !important;
@@ -3538,7 +3519,6 @@
           font-size: 1rem;
         }
       
-        /* PERBAIKAN: Certificates section di mobile */
         #certificates {
           position: relative !important;
           display: flex !important;
@@ -3555,7 +3535,7 @@
       
         #certificates .certificates-wrapper {
           width: 100% !important;
-          max-width: 320px !important; /* FIXED: 1 card only */
+          max-width: 320px !important; 
           flex-basis: 100% !important;
           order: 1 !important;
           margin: 0 auto !important;
@@ -3674,7 +3654,6 @@
             height: 42px;
         }
       
-        /* PERBAIKAN: Projects section di mobile - REMOVE EXTRA SPACE */
         #projects {
           contain: layout style;
           overflow-x: hidden;
@@ -3696,8 +3675,7 @@
           max-width: 100%;
         }
       
-        /* PERBAIKAN: Skills section di mobile - REMOVE EXTRA SPACE */
-        #skills {
+       #skills {
           contain: layout style;
           padding: 0 !important;
           margin: 0 !important;

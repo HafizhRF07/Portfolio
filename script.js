@@ -1,6 +1,6 @@
-// =====================
+
 // PARTICLES
-// =====================
+
 function createParticles() {
   const particlesContainer = document.querySelector(".particles");
   if (!particlesContainer) return;
@@ -19,9 +19,7 @@ function createParticles() {
 }
 createParticles();
 
-// =====================
 // HERO TEXT TYPING
-// =====================
 const texts = ["Data Science", "Aspiring Data & Visualization Specialist"];
 let index = 0, charIndex1 = 0, deleting = false;
 const textSpan = document.querySelector(".text");
@@ -65,7 +63,6 @@ menuToggle.addEventListener("click", () => {
   }
 });
 
-// Smooth scroll dengan offset untuk header fixed
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener("click", function (e) {
     e.preventDefault();
@@ -122,9 +119,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// =====================
 // TYPING EFFECT SUBTITLE
-// =====================
 const typingText = document.querySelector(".typing-text");
 const text = "Welcome to my portfolio!\nI'm Hafizh Riyandi Fawwaz, a Fresh Graduate in Data Science eager to turn data into impactful insights and predictive solutions.";
 let charIndex = 0;
@@ -138,9 +133,7 @@ function typeEffect() {
 }
 typeEffect();
 
-// =====================
 // SKILLS CLONE
-// =====================
 const skills = document.querySelector(".skills");
 if (skills) {
   const skillsContainer = document.querySelector('.skills-container');
@@ -152,9 +145,7 @@ if (skills) {
   }
 }
 
-// =====================
 // PORTFOLIO TABS + CAROUSEL + MODAL + FIREBASE
-// =====================
 document.addEventListener("DOMContentLoaded", () => {
   const AUTO_INTERVAL = 3000;
 
@@ -162,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabContents = document.querySelectorAll(".tab-content");
   const underline = document.querySelector(".underline");
 
-  // State untuk track apakah certificate section sudah visible
   let isCertificateSectionVisible = false;
 
   tabContents.forEach((t) => (t.style.display = "none"));
@@ -208,7 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       moveUnderline(btn);
 
-      // MODIFIED: Hanya start auto-scroll jika section sudah visible
       if (id === "certificates") {
         if (isCertificateSectionVisible) {
           startAutoScroll();
@@ -312,7 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
     stopAutoScroll();
     if (getMaxIndex() <= 0) return;
     
-    // ADDED: Check visibility state before starting
     if (!isCertificateSectionVisible) return;
     
     autoTimer = setInterval(autoStep, AUTO_INTERVAL);
@@ -332,30 +320,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }, AUTO_INTERVAL);
   }
 
-  // =====================
   // INTERSECTION OBSERVER FOR CERTIFICATE SECTION
-  // =====================
   const certificateObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        // Certificate section is now visible
         isCertificateSectionVisible = true;
         
-        // Check if certificate tab is active
         const activeTab = document.querySelector(".tab-btn.active")?.dataset.target;
         if (activeTab === "certificates") {
-          // Delay untuk memberikan waktu animasi fade-in selesai
           setTimeout(() => {
             startAutoScroll();
-          }, 800); // 800ms delay = waktu animasi fade-in selesai
+          }, 800); 
         }
         
-        // Unobserve setelah pertama kali terlihat
         certificateObserver.unobserve(entry.target);
       }
     });
   }, {
-    threshold: 0.2, // Trigger saat 20% section visible
+    threshold: 0.2,
     rootMargin: "0px 0px -50px 0px"
   });
 
@@ -414,7 +396,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!wrapper) return;
     wrapper.addEventListener("mouseenter", stopAutoScroll);
     wrapper.addEventListener("mouseleave", () => {
-      // MODIFIED: Only restart if section is visible
       if (isCertificateSectionVisible) {
         startAutoScroll();
       }
@@ -558,7 +539,6 @@ document.addEventListener("DOMContentLoaded", () => {
       attachSwipe();
     }
     
-    // MODIFIED: Don't auto-start here, wait for intersection observer
   }
 
   let resizeTimer = null;
@@ -587,16 +567,13 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
 
-    // Cek tipe file
     if (type === 'pdf') {
-      // Tampilkan PDF, sembunyikan gambar
       if (modalImg) modalImg.style.display = "none";
       if (modalPdf) {
         modalPdf.style.display = "block";
         modalPdf.src = src;
       }
     } else {
-      // Tampilkan gambar, sembunyikan PDF
       if (modalPdf) modalPdf.style.display = "none";
       if (modalImg) {
         modalImg.style.display = "block";
@@ -612,7 +589,6 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.style.display = "none";
     document.body.style.overflow = "";
 
-    // Clear sources saat close
     const modalPdf = document.getElementById("modalPdf");
     if (modalPdf) modalPdf.src = "";
   };
@@ -704,9 +680,7 @@ document.addEventListener("DOMContentLoaded", () => {
     appearOnScroll.observe(section);
   });
 
-  // =====================
   // FIREBASE INTEGRATION
-  // =====================
   import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js').then((firebaseApp) => {
     return Promise.all([
       import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js'),
@@ -758,7 +732,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await signInWithPopup(auth, provider);
             currentUser = result.user;
             
-            // Auto refresh setelah login berhasil
             setTimeout(() => {
               window.location.reload();
             }, 500);
@@ -897,7 +870,6 @@ document.addEventListener("DOMContentLoaded", () => {
             await set(likeRef, 'like');
           }
 
-          // FIXED: Update UI immediately
           await updateLikeUI(commentId, isReply, parentCommentId);
         } catch (error) {
           console.error('Error toggling like:', error);
@@ -929,14 +901,12 @@ document.addEventListener("DOMContentLoaded", () => {
             await set(likeRef, 'dislike');
           }
 
-          // FIXED: Update UI immediately
           await updateLikeUI(commentId, isReply, parentCommentId);
         } catch (error) {
           console.error('Error toggling dislike:', error);
         }
       }
 
-      // FIXED: New function to update UI immediately
       async function updateLikeUI(commentId, isReply = false, parentCommentId = null) {
         const likesData = await getLikesCount(commentId, isReply, parentCommentId);
 
@@ -1054,7 +1024,6 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
       
         if (parentReplyId) {
-          // Nested reply - insert after the parent reply
           const parentReplyItem = commentItem.querySelector(`[data-reply-id="${parentReplyId}"]`)?.closest('.reply-item');
           if (parentReplyItem) {
             let nestedContainer = parentReplyItem.querySelector('.nested-replies');
@@ -1066,7 +1035,6 @@ document.addEventListener("DOMContentLoaded", () => {
             nestedContainer.insertBefore(replyForm, nestedContainer.firstChild);
           }
         } else {
-          // Top-level reply
           const repliesSection = commentItem.querySelector('.replies-section');
           if (repliesSection) {
             repliesSection.insertBefore(replyForm, repliesSection.firstChild);
@@ -1097,7 +1065,6 @@ document.addEventListener("DOMContentLoaded", () => {
               timestamp: Date.now()
             };
           
-            // Add parent reply info if it's a nested reply
             if (parentReplyId) {
               newReplyData.parentReplyId = parentReplyId;
               newReplyData.replyToName = replyToName;
@@ -1141,7 +1108,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
           });
         
-          // Separate top-level replies and nested replies
           const topLevelReplies = replies.filter(r => !r.parentReplyId);
           const nestedRepliesMap = {};
 
@@ -1152,13 +1118,11 @@ document.addEventListener("DOMContentLoaded", () => {
             nestedRepliesMap[reply.parentReplyId].push(reply);
           });
         
-          // Render top-level replies
           for (const replyData of topLevelReplies) {
             const replyItem = await createReplyElement(replyData, commentId, nestedRepliesMap);
             repliesContainer.appendChild(replyItem);
           }
         
-          // Attach event listeners
           attachReplyEventListeners(commentId);
         });
       }
@@ -1270,9 +1234,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const commentItem = document.querySelector(`[data-comment-id="${commentId}"]`);
         if (!commentItem) return;
       
-        // ========================================
         // LIKE BUTTONS - TOP-LEVEL REPLIES ONLY
-        // ========================================
         commentItem.querySelectorAll('.reply-item > .reply-footer .like-btn[data-reply-id]').forEach(btn => {
           const newBtn = btn.cloneNode(true);
           btn.parentNode.replaceChild(newBtn, btn);
@@ -1286,15 +1248,13 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
       
-        // ========================================
         // DISLIKE BUTTONS - TOP-LEVEL REPLIES ONLY
-        // ========================================
         commentItem.querySelectorAll('.reply-item > .reply-footer .dislike-btn[data-reply-id]').forEach(btn => {
           const newBtn = btn.cloneNode(true);
           btn.parentNode.replaceChild(newBtn, btn);
 
           newBtn.addEventListener('click', async function(e) {
-            e.stopPropagation(); // Prevent event bubbling
+            e.stopPropagation();
             e.preventDefault();
             const replyId = this.getAttribute('data-reply-id');
             const commentId = this.getAttribute('data-comment-id');
@@ -1302,15 +1262,13 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
       
-        // ========================================
         // LIKE BUTTONS - NESTED REPLIES
-        // ========================================
         commentItem.querySelectorAll('.nested-reply-item .like-btn[data-reply-id]').forEach(btn => {
           const newBtn = btn.cloneNode(true);
           btn.parentNode.replaceChild(newBtn, btn);
 
           newBtn.addEventListener('click', async function(e) {
-            e.stopPropagation(); // CRITICAL: Prevent clicking parent reply
+            e.stopPropagation(); 
             e.preventDefault();
             const replyId = this.getAttribute('data-reply-id');
             const commentId = this.getAttribute('data-comment-id');
@@ -1318,15 +1276,13 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
       
-        // ========================================
         // DISLIKE BUTTONS - NESTED REPLIES
-        // ========================================
         commentItem.querySelectorAll('.nested-reply-item .dislike-btn[data-reply-id]').forEach(btn => {
           const newBtn = btn.cloneNode(true);
           btn.parentNode.replaceChild(newBtn, btn);
 
           newBtn.addEventListener('click', async function(e) {
-            e.stopPropagation(); // CRITICAL: Prevent clicking parent reply
+            e.stopPropagation(); 
             e.preventDefault();
             const replyId = this.getAttribute('data-reply-id');
             const commentId = this.getAttribute('data-comment-id');
@@ -1334,9 +1290,7 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
       
-        // ========================================
         // DELETE REPLY BUTTONS (Both top-level and nested)
-        // ========================================
         commentItem.querySelectorAll('.delete-reply-btn').forEach(btn => {
           const newBtn = btn.cloneNode(true);
           btn.parentNode.replaceChild(newBtn, btn);
@@ -1358,9 +1312,7 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         });
       
-        // ========================================
         // REPLY TO REPLY BUTTONS
-        // ========================================
         commentItem.querySelectorAll('.reply-to-reply-btn').forEach(btn => {
           const newBtn = btn.cloneNode(true);
           btn.parentNode.replaceChild(newBtn, btn);
@@ -1427,7 +1379,6 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
             
-        // Add nested replies if any
         if (nestedRepliesMap[replyData.id] && nestedRepliesMap[replyData.id].length > 0) {
           const nestedContainer = document.createElement('div');
           nestedContainer.className = 'nested-replies';
