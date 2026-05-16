@@ -20,7 +20,7 @@ function createParticles() {
 createParticles();
 
 // HERO TEXT TYPING
-const texts = ["Data Science", "Aspiring Data & Visualization Specialist"];
+/*const texts = ["Data Science", "Aspiring Data & Visualization Specialist"];
 let index = 0, charIndex1 = 0, deleting = false;
 const textSpan = document.querySelector(".text");
 
@@ -44,7 +44,7 @@ function type() {
   }
   setTimeout(type, 60);
 }
-type();
+type(); */
 
 const menuToggle = document.getElementById("menu-toggle");
 const navLinks = document.getElementById("nav-links");
@@ -120,7 +120,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // TYPING EFFECT SUBTITLE
-const typingText = document.querySelector(".typing-text");
+/*const typingText = document.querySelector(".typing-text");
 const text = "Welcome to my portfolio!\nI'm Hafizh Riyandi Fawwaz, a Fresh Graduate in Data Science eager to turn data into impactful insights and predictive solutions.";
 let charIndex = 0;
 
@@ -131,7 +131,7 @@ function typeEffect() {
     setTimeout(typeEffect, 50);
   }
 }
-typeEffect();
+typeEffect(); */
 
 // SKILLS CLONE
 const skills = document.querySelector(".skills");

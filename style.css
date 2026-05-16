@@ -3897,3 +3897,171 @@
           display: inline-block;
         }
       }
+
+      /* LANGUAGE DROPDOWN */
+      .lang-dropdown-item {
+        position: relative;
+        list-style: none;
+      }
+
+      /* Tombol trigger — dalam kotak */
+      .lang-dropdown-trigger {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.88rem;
+        cursor: pointer;
+        padding: 5px 10px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+      }
+
+      .lang-dropdown-trigger:hover {
+        color: #00d4ff;
+        border-color: #00d4ff;
+        background: rgba(0, 212, 255, 0.08);
+      }
+
+      .lang-dropdown-item.open .lang-dropdown-trigger {
+        color: #00d4ff;
+        border-color: #00d4ff;
+        background: rgba(0, 212, 255, 0.1);
+      }
+
+      .lang-flag {
+        width: 22px;
+        height: 15px;
+        object-fit: cover;
+        border-radius: 2px;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+
+      .lang-label {
+        font-size: 0.88rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+
+      .lang-arrow {
+        font-size: 0.6rem;
+        opacity: 0.6;
+        transition: transform 0.25s ease;
+        margin-left: 1px;
+      }
+
+      .lang-dropdown-item.open .lang-arrow {
+        transform: rotate(180deg);
+      }
+
+      /* ---- DESKTOP: dropdown popup ke bawah ---- */
+      @media (min-width: 993px) {
+        .lang-dropdown-menu {
+          display: none;
+          position: absolute;
+          top: calc(100% + 10px);
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(26, 26, 46, 0.97);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(0, 212, 255, 0.25);
+          border-radius: 10px;
+          padding: 6px;
+          min-width: 155px;
+          z-index: 2000;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+          animation: dropdownFadeIn 0.2s ease;
+        }
+      
+        @keyframes dropdownFadeIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+          to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+      
+        .lang-dropdown-item.open .lang-dropdown-menu {
+          display: block;
+        }
+      }
+
+      /* ---- MOBILE & TABLET: expand inline ---- */
+      @media (max-width: 992px) {
+        .lang-dropdown-menu {
+          display: none;
+          position: static;
+          transform: none;
+          background: rgba(0, 212, 255, 0.05);
+          border: 1px solid rgba(0, 212, 255, 0.2);
+          border-radius: 8px;
+          padding: 4px;
+          margin-top: 8px;
+          width: 100%;
+          box-shadow: none;
+          animation: dropdownFadeInMobile 0.2s ease;
+        }
+      
+        @keyframes dropdownFadeInMobile {
+          from { opacity: 0; transform: translateY(-4px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      
+        .lang-dropdown-item.open .lang-dropdown-menu {
+          display: block;
+        }
+      
+        .lang-dropdown-trigger {
+          font-size: 0.9rem;
+          padding: 6px 12px;
+          width: 100%;
+          justify-content: flex-start;
+        }
+      }
+
+      /* Setiap opsi bahasa */
+      .lang-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 8px 12px;
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 0.9rem;
+        font-weight: 500;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        cursor: pointer;
+        border-radius: 7px;
+        transition: all 0.2s ease;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      .lang-option:hover {
+        background: rgba(0, 212, 255, 0.12);
+        color: #fff;
+      }
+
+      .lang-option.active {
+        background: linear-gradient(45deg, rgba(9,9,121,0.5), rgba(0,212,255,0.3));
+        color: #00d4ff;
+        font-weight: 600;
+      }
+
+      .lang-option-text {
+        flex: 1;
+      }
+
+      .lang-option-flag {
+        width: 22px;
+        height: 15px;
+        object-fit: cover;
+        border-radius: 2px;
+        display: inline-block;
+        flex-shrink: 0;
+      }
