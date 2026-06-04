@@ -314,18 +314,9 @@
         --bg-color: #0077b5;
       }
       .social-links .item:nth-child(3) {
-        --bg-color: #000;
+        --bg-color: #ff0101;
       }
       .social-links .item:nth-child(4) {
-        --bg-color: #25D366;
-      }
-      .social-links .item:nth-child(5) {
-        --bg-color: #0077b5;
-      }
-      .social-links .item:nth-child(6) {
-        --bg-color: #ff0000;
-      }
-      .social-links .item:nth-child(7) {
         --bg-color: #000;
       }
 
@@ -3904,7 +3895,6 @@
         list-style: none;
       }
 
-      /* Tombol trigger — dalam kotak */
       .lang-dropdown-trigger {
         display: flex;
         align-items: center;
@@ -3960,7 +3950,7 @@
         transform: rotate(180deg);
       }
 
-      /* ---- DESKTOP: dropdown popup ke bawah ---- */
+      /* -DESKTOP:*/
       @media (min-width: 993px) {
         .lang-dropdown-menu {
           display: none;
@@ -4022,7 +4012,6 @@
         }
       }
 
-      /* Setiap opsi bahasa */
       .lang-option {
         display: flex;
         align-items: center;
