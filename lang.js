@@ -55,6 +55,7 @@ const translations = {
         skills: "Skills"
       },
       certificates: [
+        { title: "Data Analyst", issuer: "Ditjen Minerba - 2026" },
         { title: "Belajar ML untuk Pemula", issuer: "Dicoding - 2025" },
         { title: "Mulai Pemrograman Python", issuer: "Dicoding - 2025" },
         { title: "Belajar Dasar SQL", issuer: "Dicoding - 2025" },
@@ -192,6 +193,7 @@ const translations = {
         skills: "Keahlian"
       },
       certificates: [
+        { title: "Data Analyst", issuer: "Ditjen Minerba - 2026" },
         { title: "Belajar ML untuk Pemula", issuer: "Dicoding - 2025" },
         { title: "Mulai Pemrograman Python", issuer: "Dicoding - 2025" },
         { title: "Belajar Dasar SQL", issuer: "Dicoding - 2025" },
