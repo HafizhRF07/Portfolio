@@ -92,7 +92,13 @@ const translations = {
           title: "Decision Tree for Social Welfare Classification",
           desc: "A classification model using Decision Tree algorithm to identify individuals requiring social welfare services, with time-based feature expansion and spatial analysis using Ordinary Kriging.",
           view: "View Project"
+        },
+        {
+          title: "Dashboard and Mindmap Supply Demand",
+          desc: "Building an interactive dashboard and mind map to map supply and demand from production to marketing, by processing over 65,000+ production data records and 25,000+ marketing data records across five commodities: bauxite, tin, nickel, gold, and copper.",
+          view: "View Project"
         }
+
       ],
       showAll: "Show All Projects",
       showLess: "Show Less"
@@ -229,6 +235,11 @@ const translations = {
         {
           title: "Decision Tree untuk Klasifikasi Kesejahteraan Sosial",
           desc: "Model klasifikasi menggunakan algoritma Decision Tree untuk mengidentifikasi individu yang membutuhkan layanan kesejahteraan sosial, dengan ekspansi fitur berbasis waktu dan analisis spasial menggunakan Ordinary Kriging.",
+          view: "Lihat Proyek"
+        },
+        {
+          title: "Pengembangan Dasboard dan Mindmap Interaktif untuk Analisis Penawaran dan Permintaan ",
+          desc: "Membangun dashboard dan mindmap interaktif untuk memetakan supply demand dari produksi hingga pemasaran, dengan mengolah 65.000+ data produksi dan 25.000+ data pemasaran dari 5 komoditas yaitu bauksit, timah, nikel, emas, dan tembaga.",
           view: "Lihat Proyek"
         }
       ],
