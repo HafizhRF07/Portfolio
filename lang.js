@@ -75,22 +75,22 @@ const translations = {
         },
         {
           title: "Rainfall Prediction App",
-          desc: "A data-driven application that uses SARIMA-based time-series forecasting with Python and Streamlit to provide accurate rainfall predictions, helping farmers plan planting schedules.",
+          desc: "Rainfall prediction application using Python, SARIMA, and Streamlit, covering the complete data science workflow, including data collection, data preprocessing, time-series modeling, model evaluation, and interactive visualization. The model achieved strong predictive performance with an MSE of 0.049, MAE of 0.145, and RMSE of 0.223, enabling farmers to make more informed and timely planting decisions.",
           view: "View Project"
         },
         {
           title: "DCU Monitoring Dashboard",
-          desc: "Built with Power BI to monitor employee health conditions, support preventive measures, and identify health trends using the Daily Check-Up dataset including health status and demographics.",
+          desc: "Built with Power BI to monitor employee health conditions, support preventive measures, and identify health trends using the Daily Check Up dataset including health status and demographics.",
           view: "View Project"
         },
         {
           title: "Water Discharge Interpolation Dashboard",
-          desc: "An interactive dashboard using Python and Streamlit to visualize water discharge data. Features data preprocessing, interpolation, Q80% calculation, and seasonal pattern analysis.",
+          desc: "Interactive water discharge dashboard using Python and Streamlit by implementing data preprocessing, interpolation, Q80% discharge calculation, and seasonal pattern visualization. The dashboard transforms incomplete data into more accurate and actionable insights, supporting data driven decision making.",
           view: "View Project"
         },
         {
           title: "Decision Tree for Social Welfare Classification",
-          desc: "A classification model using Decision Tree algorithm to identify individuals requiring social welfare services, with time-based feature expansion and spatial analysis using Ordinary Kriging.",
+          desc: "Decision Tree based classification model to identify individuals in need of social welfare services, incorporating time-based feature expansion and spatial analysis using Ordinary Kriging. The model achieved up to 91% accuracy and provided insights into key social economic factors, supporting more accurate decision making and policy targeting.",
           view: "View Project"
         },
         {
@@ -112,7 +112,7 @@ const translations = {
       waLabel: "WhatsApp",
       waText: "Chat via WhatsApp",
       locationLabel: "Location",
-      locationText: "West Java, Depok, Indonesia",
+      locationText: "Depok, West Java, Indonesia",
       linkedinLabel: "LinkedIn",
       namePlaceholder: "Enter your name",
       emailPlaceholder: "Enter your email",
@@ -219,22 +219,22 @@ const translations = {
         },
         {
           title: "Aplikasi Prediksi Curah Hujan",
-          desc: "Aplikasi berbasis data yang menggunakan peramalan time-series berbasis SARIMA dengan Python dan Streamlit untuk prediksi curah hujan yang akurat, membantu petani merencanakan jadwal tanam.",
+          desc: "Aplikasi prediksi curah hujan berbasis Python, SARIMA, dan Streamlit melalui proses pengumpulan data, praproses, pemodelan, evaluasi, dan visualisasi. Model mencapai performa yang baik dengan MSE : 0,049, MAE : 0,145, dan RMSE : 0,223, sehingga mampu membantu petani merencanakan waktu tanam secara lebih tepat.",
           view: "Lihat Proyek"
         },
         {
           title: "Dashboard Monitoring DCU",
-          desc: "Dibangun dengan Power BI untuk memantau kondisi kesehatan karyawan, mendukung langkah preventif, dan mengidentifikasi tren kesehatan menggunakan dataset Daily Check-Up termasuk status kesehatan dan demografi.",
+          desc: "Dibangun dengan Power BI untuk memantau kondisi kesehatan karyawan, mendukung langkah preventif, dan mengidentifikasi tren kesehatan menggunakan dataset Daily Check Up termasuk status kesehatan dan demografi.",
           view: "Lihat Proyek"
         },
         {
           title: "Dashboard Interpolasi Debit Air",
-          desc: "Dashboard interaktif menggunakan Python dan Streamlit untuk memvisualisasikan data debit air. Dilengkapi preprocessing data, interpolasi, perhitungan Q80%, dan analisis pola musiman.",
+          desc: "Dashboard interaktif data debit air menggunakan Python dan Streamlit dengan mengimplementasikan praproses data, interpolasi, perhitungan Q80%, dan visualisasi pola musiman. Dashboard ini membantu mengubah data yang belum lengkap menjadi informasi yang lebih akurat dan mendukung pengambilan keputusan.",
           view: "Lihat Proyek"
         },
         {
           title: "Decision Tree untuk Klasifikasi Kesejahteraan Sosial",
-          desc: "Model klasifikasi menggunakan algoritma Decision Tree untuk mengidentifikasi individu yang membutuhkan layanan kesejahteraan sosial, dengan ekspansi fitur berbasis waktu dan analisis spasial menggunakan Ordinary Kriging.",
+          desc: "Model klasifikasi menggunakan algoritma Decision Tree untuk mengidentifikasi individu yang membutuhkan layanan kesejahteraan sosial, dengan ekspansi fitur berbasis waktu dan analisis spasial menggunakan Ordinary Kriging. Model mencapai akurasi hingga 91% dan memberikan wawasan tentang faktor-faktor sosial ekonomi utama, sehingga dapat membantu pengambilan keputusan dan penentuan target kebijakan secara lebih tepat.",
           view: "Lihat Proyek"
         },
         {
@@ -255,7 +255,7 @@ const translations = {
       waLabel: "WhatsApp",
       waText: "Chat via WhatsApp",
       locationLabel: "Lokasi",
-      locationText: "Jawa Barat, Depok, Indonesia",
+      locationText: "Depok, Jawa Barat, Indonesia",
       linkedinLabel: "LinkedIn",
       namePlaceholder: "Masukkan nama Anda",
       emailPlaceholder: "Masukkan email Anda",
